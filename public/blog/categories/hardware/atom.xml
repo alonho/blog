@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Alon Horev]]></title>
-  <link href="http://alon.horev.net/atom.xml" rel="self"/>
+  <title><![CDATA[Category: hardware | Alon Horev]]></title>
+  <link href="http://alon.horev.net/blog/categories/hardware/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
   <updated>2012-12-03T23:10:10+02:00</updated>
   <id>http://alon.horev.net/</id>
@@ -22,35 +22,35 @@
 
 <h1>A hardware lesson for software developers: from logical gates to the game of life</h1>
 
-<p>About a week ago I&#8217;ve decided to learn VHDL and as an exercise, implement &#8216;The game of life&#8217;.
+<p>About a week ago I've decided to learn VHDL and as an exercise, implement 'The game of life'.
 VHDL is a hardware definition language. Meaning, a language that is compiled to hardware.</p>
 
-<p><em>Why write this post? (or why I&#8217;m a mazochist as my friends ask)</em>
-I thought it&#8217;d be interesting to see what it takes to develop a chip. I was specifically curious about the programming model and mindset.</p>
+<p><em>Why write this post? (or why I'm a mazochist as my friends ask)</em>
+I thought it'd be interesting to see what it takes to develop a chip. I was specifically curious about the programming model and mindset.</p>
 
 <p>I think every programmer should be familiar with the layers he relies on. Not every Python programmer knows C. And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.</p>
 
 <p><em>pre-requisites</em>
-I&#8217;m going to assume you know nothing about hardware and a little about software.
+I'm going to assume you know nothing about hardware and a little about software.
 VHDL is based on Ada so you might even find it familiar.</p>
 
 <h2>Booleans all the way down</h2>
 
-<p>Most hardware these days deeply relies on boolean logic, here&#8217;s why:</p>
+<p>Most hardware these days deeply relies on boolean logic, here's why:</p>
 
 <ul>
-<li>Boolean algebra has been around for ages - simple boolean operations like &#8216;and&#8217;, &#8216;or&#8217; and &#8216;not&#8217; can compose incredibly sophisticated algorithms (modems, calculators, CPUs!).</li>
+<li>Boolean algebra has been around for ages - simple boolean operations like 'and', 'or' and 'not' can compose incredibly sophisticated algorithms (modems, calculators, CPUs!).</li>
 <li>Passing boolean data is easy in hardware, as you either pass electricity through a line to indicate a <strong>true</strong> state and stop passing electricity to indicate <strong>false</strong>.</li>
 </ul>
 
 
-<p>(Light bulb moment): ever wondered why integers in software are powers of two? or what&#8217;s the difference between 32bit and 64bit?</p>
+<p>(Light bulb moment): ever wondered why integers in software are powers of two? or what's the difference between 32bit and 64bit?</p>
 
 <p>A CPU has a fixed amount of wires (32/64) dedicated to represent data (a.k.a word size). each wire represents a bit that can be true or false (1 or 0). The binary numeral system is used to represent a number in a bunch of 1s and 0s.</p>
 
 <h2>Dive into VHDL - the life of a gate</h2>
 
-<p>Let&#8217;s start off with an implementation of an &#8216;and&#8217; gate:</p>
+<p>Let's start off with an implementation of an 'and' gate:</p>
 
 <p>1   library ieee;
 2   use ieee.std_logic_1164.all;</p>
@@ -74,15 +74,15 @@ end and_entity;
 <pre><code>end arch;
 </code></pre>
 
-<p>What&#8217;s happening in the code line by line:</p>
+<p>What's happening in the code line by line:</p>
 
 <p>1-2: Include the module that exports the std_logic type which is a simple bit (can be 0 or 1).
 4: Define a new entity. An entity is analogous to an object in OOP.
 5: the entity interacts with other entities using ports. input ports are used to receive information and output ports are used to send information.
 6: define two inputs of type std_logic.
 7: define one output of type std_logic.
-14: the architecture is the implementation of the object&#8217;s behavior. it&#8217;s name (arch) is redundant as only one architecture is allowed.
-16: the actual implementation of an &#8216;and&#8217; gate. every time one of the inputs changes the output is recalcualted.</p>
+14: the architecture is the implementation of the object's behavior. it's name (arch) is redundant as only one architecture is allowed.
+16: the actual implementation of an 'and' gate. every time one of the inputs changes the output is recalcualted.</p>
 
 <p>By using a synthesis tool we can convert this code to a hardware specification:</p>
 
@@ -91,7 +91,7 @@ end and_entity;
 <h2>Think Parallel - a simple adder</h2>
 
 <p>An adder has two single bit inputs and a two-bit output: sum_0, sum_1
-Here&#8217;s a mapping for all possible inputs and outputs:</p>
+Here's a mapping for all possible inputs and outputs:</p>
 
 <p>x + y = sum_1 sum_0 sum as binary sum as int
 0   0   0     0     0             0
@@ -123,47 +123,47 @@ The answer is: these lines execute all the time, in parallel!</p>
 
 <p>This is a major difference from software written for CPUs, <em>VHDL is concurrent by default</em>.</p>
 
-<p>VHDL has the notion of <em>concurrent</em> statements and <em>sequential</em> statements. Sequential statments can be used to implement state machines and other sequential procedures. We&#8217;ll see an example later on.</p>
+<p>VHDL has the notion of <em>concurrent</em> statements and <em>sequential</em> statements. Sequential statments can be used to implement state machines and other sequential procedures. We'll see an example later on.</p>
 
 <h2>Testing using sequential code</h2>
 
-<p>VHDL programmers (often called designers) write tests frequently. they call them &#8216;test benches&#8217; or &#8216;simulations&#8217;.</p>
+<p>VHDL programmers (often called designers) write tests frequently. they call them 'test benches' or 'simulations'.</p>
 
-<p>The test will be a separate entity. In order to verify the adder&#8217;s functionality we&#8217;ll have to drive different inputs and check the sum.</p>
+<p>The test will be a separate entity. In order to verify the adder's functionality we'll have to drive different inputs and check the sum.</p>
 
 <p>CODE HERE</p>
 
-<p>9-14: repetition of the adder&#8217;s interface (VHDL isn&#8217;t very DRY)
+<p>9-14: repetition of the adder's interface (VHDL isn't very DRY)
 16: signals are wires that the test can manipulate. their type is std_logic so they can be set to zero or one
-19-22: a port map connects the signals to the adder. The signals are named exactly as the adder&#8217;s ports (the syntax: SIGNAL_NAME => PORT_NAME)
+19-22: a port map connects the signals to the adder. The signals are named exactly as the adder's ports (the syntax: SIGNAL_NAME => PORT_NAME)
 24: the process definition. A process contains a list of sequential statements. Multiple processes can run concurrently.
 26-27: signal assignments.
-28: signals have an interesting behavior where the assignment takes effect only when calling &#8216;wait&#8217;. This is more a feature than a bug as it allows doing atomic changes over multiple signals.
+28: signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is more a feature than a bug as it allows doing atomic changes over multiple signals.
 29: make sure the sum changed</p>
 
 <p>The following lines test the remaining test cases.</p>
 
-<p>Here&#8217;s the simulation in wave form:</p>
+<p>Here's the simulation in wave form:</p>
 
 <p>IMAGE here</p>
 
 <h2>The game of life</h2>
 
-<p>In case you never heard about the game of life: http://en.wikipedia.org/wiki/Conway&#8217;s_Game_of_Life</p>
+<p>In case you never heard about the game of life: http://en.wikipedia.org/wiki/Conway's_Game_of_Life</p>
 
 <p>First, I want to present the typical software-based solution:
 1. The board is a matrix of booleans representing cells.
-2. For each cycle: the next board is generated by iterating over the matrix, for each cell: count it&#8217;s neighbors and determine if it should be alive or dead.</p>
+2. For each cycle: the next board is generated by iterating over the matrix, for each cell: count it's neighbors and determine if it should be alive or dead.</p>
 
-<p>When trying to apply this design in VHDL I quickly ran into brick walls. A sequential iteration over an entire matrix is not the VHDL &#8216;way&#8217;. My guess is that a sequential design would generate much more logical gates and perhaps even be slower (In chip design you often watch out for the number of logical gates and hardware elements used compared to CPU and memory in software).</p>
+<p>When trying to apply this design in VHDL I quickly ran into brick walls. A sequential iteration over an entire matrix is not the VHDL 'way'. My guess is that a sequential design would generate much more logical gates and perhaps even be slower (In chip design you often watch out for the number of logical gates and hardware elements used compared to CPU and memory in software).</p>
 
-<p>VHDL encourages you to build small components and inter-connect them where needed. each component has it&#8217;s own hardware resources and can run independently and in parallel to others.</p>
+<p>VHDL encourages you to build small components and inter-connect them where needed. each component has it's own hardware resources and can run independently and in parallel to others.</p>
 
 <p>The design I came up with is the following:
-1. <em>Cell</em> - is an entity. connected to it&#8217;s neighbors via ports. has an independent process for counting the neighbors and setting the next state.
+1. <em>Cell</em> - is an entity. connected to it's neighbors via ports. has an independent process for counting the neighbors and setting the next state.
 2. <em>Board</em> - is a matrix of cells. all it does is inter-connects them.</p>
 
-<p>Here&#8217;s the cell&#8217;s code:</p>
+<p>Here's the cell's code:</p>
 
 <p>entity cell is</p>
 
@@ -206,8 +206,8 @@ end process;
 <p>end arch;</p>
 
 <p>3: generics are variables that can be set upon entity instantiation. similar to constructor arguments.
-19: notice the process gets an argument? a process can state a list of signals (also called a sensitivity list) that should trigger it&#8217;s invocation. that way, the cell will calculate it&#8217;s next state every time the clock changes.
-20: variables are exactly what you think they. notice we limit the integer&#8217;s range to 8? that&#8217;s because we&#8217;ll have a maximum of 8 neighbors.</p>
+19: notice the process gets an argument? a process can state a list of signals (also called a sensitivity list) that should trigger it's invocation. that way, the cell will calculate it's next state every time the clock changes.
+20: variables are exactly what you think they. notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors.</p>
 
 <p>Conclusions</p>
 
@@ -216,7 +216,7 @@ end process;
 <p>software - write serial code, parallelize when need to scale.
 hardware - write concurrent code, write serial code where needed.</p>
 
-<p>One of the most challenging concepts in software is concurreny. It&#8217;s interesting how fundamental this topic is to hardware.</p>
+<p>One of the most challenging concepts in software is concurreny. It's interesting how fundamental this topic is to hardware.</p>
 
 <p>Scalabillity - How the design scales for a large amount of cells?</p>
 
