@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hardware | Alon Horev]]></title>
   <link href="http://alon.horev.net/blog/categories/hardware/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-04T12:35:55+02:00</updated>
+  <updated>2012-12-04T16:36:25+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -18,16 +18,15 @@
     <link href="http://alon.horev.net/blog/2012/12/03/a-hardware-lesson-for-software-developers-from-logical-gates-to-the-game-of-life/"/>
     <updated>2012-12-03T23:04:00+02:00</updated>
     <id>http://alon.horev.net/blog/2012/12/03/a-hardware-lesson-for-software-developers-from-logical-gates-to-the-game-of-life</id>
-    <content type="html"><![CDATA[<p>About a week ago I've decided to learn VHDL and as an exercise, implement 'The game of life'.
+    <content type="html"><![CDATA[<p>A week ago I've decided to learn VHDL and as an exercise, implement 'The game of life'.<br/>
 VHDL is a hardware definition language. Meaning, a language that is compiled to hardware.</p>
 
-<p><em>Why write this post? (or why I'm a mazochist as my friends ask)</em>
-I thought it'd be interesting to see what it takes to develop a chip. I was specifically curious about the programming model and mindset.</p>
+<p><strong>Why write this post?</strong><br/>
+I thought it'd be interesting to see what it takes to develop a chip. Coming from software, I was specifically curious about the programming model and mindset.<br/>
+I think every programmer should be familiar with the layers he relies on; Not every Python programmer knows C, And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.</p>
 
-<p>I think every programmer should be familiar with the layers he relies on. Not every Python programmer knows C. And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.</p>
-
-<p><em>pre-requisites</em>
-I'm going to assume you know nothing about hardware and a little about software.
+<p><strong>Required knowledge</strong><br/>
+I'm going to assume you know nothing about hardware and a little about software.<br/>
 VHDL is based on Ada so you might even find it familiar.</p>
 
 <h2>Booleans all the way down</h2>
@@ -36,13 +35,14 @@ VHDL is based on Ada so you might even find it familiar.</p>
 
 <ul>
 <li>Boolean algebra has been around for ages - simple boolean operations like 'and', 'or' and 'not' can compose incredibly sophisticated algorithms (modems, calculators, CPUs!).</li>
-<li>Passing boolean data is easy in hardware, as you either pass electricity through a line to indicate a <strong>true</strong> state and stop passing electricity to indicate <strong>false</strong>.</li>
+<li>Passing boolean data is easy in hardware. you pass electricity through a wire to indicate a <strong>true</strong> state and stop passing electricity to indicate a <strong>false</strong> state.</li>
 </ul>
 
 
-<p>(Light bulb moment): ever wondered why integers in software are powers of two? or what's the difference between 32bit and 64bit?</p>
-
-<p>A CPU has a fixed amount of wires (32/64) dedicated to represent data (a.k.a word size). each wire represents a bit that can be true or false (1 or 0). The binary numeral system is used to represent a number in a bunch of 1s and 0s.</p>
+<p><strong>Light bulb moment: ever wondered why integers in software are powers of two?</strong><br/>
+A CPU has a fixed amount of wires (32/64) dedicated to represent data (a.k.a word size).<br/>
+each wire represents a bit that can be true or false (1 or 0).<br/>
+The binary numeral system is used to represent a number in a bunch of 1s and 0s.</p>
 
 <h2>Dive into VHDL - the life of a gate</h2>
 
@@ -63,94 +63,259 @@ VHDL is based on Ada so you might even find it familiar.</p>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='ada'><span class='line'><span class="n">library</span> <span class="n">ieee</span><span class="p">;</span>
-</span><span class='line'><span class="kn">use</span> <span class="nn">ieee.std_logic_1164.all</span><span class="p">;</span>	
+</pre></td><td class='code'><pre><code class='vhdl'><span class='line'><span class="k">library</span> <span class="nn">ieee</span><span class="p">;</span>
+</span><span class='line'><span class="k">use</span> <span class="nn">ieee.std_logic_1164.all</span><span class="p">;</span>	
 </span><span class='line'>
-</span><span class='line'><span class="n">entity</span> <span class="n">and_entity</span> <span class="kr">is</span>
-</span><span class='line'>  <span class="n">port</span><span class="p">(</span>	
-</span><span class='line'>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="ow">in</span> <span class="n">std_logic</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">result</span><span class="p">:</span> <span class="kr">out</span> <span class="n">std_logic</span>
+</span><span class='line'><span class="k">entity</span> <span class="nc">and_entity</span> <span class="k">is</span>
+</span><span class='line'>  <span class="k">port</span><span class="p">(</span>	
+</span><span class='line'>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="k">in</span> <span class="kt">std_logic</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">result</span><span class="o">:</span> <span class="k">out</span> <span class="kt">std_logic</span>
 </span><span class='line'>    <span class="p">);</span>
-</span><span class='line'><span class="kr">end</span> <span class="nf">and_entity</span><span class="p">;</span>
+</span><span class='line'><span class="k">end</span> <span class="nc">and_entity</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">architecture</span> <span class="n">arch</span> <span class="kr">of</span> <span class="n">and_entity</span> <span class="kr">is</span>
-</span><span class='line'><span class="kr">begin</span>
-</span><span class='line'>  <span class="n">result</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="ow">and</span> <span class="n">y</span><span class="p">;</span>
-</span><span class='line'><span class="kr">end</span> <span class="nf">arch</span><span class="p">;</span>
+</span><span class='line'><span class="k">architecture</span> <span class="nc">arch</span> <span class="k">of</span> <span class="nc">and_entity</span> <span class="k">is</span>
+</span><span class='line'><span class="k">begin</span>
+</span><span class='line'>  <span class="n">result</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="k">and</span> <span class="n">y</span><span class="p">;</span>
+</span><span class='line'><span class="k">end</span> <span class="nc">arch</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>What's happening in the code line by line:</p>
 
-<p>1-2: Include the module that exports the std_logic type which is a simple bit (can be 0 or 1).
-4: Define a new entity. An entity is analogous to an object in OOP.
-5: the entity interacts with other entities using ports. input ports are used to receive information and output ports are used to send information.
-6: define two inputs of type std_logic.
-7: define one output of type std_logic.
-14: the architecture is the implementation of the object's behavior. it's name (arch) is redundant as only one architecture is allowed.
-16: the actual implementation of an 'and' gate. every time one of the inputs changes the output is recalcualted.</p>
+<p>1-2: Include the module that exports the std_logic type which is a simple bit (can be 0 or 1).<br/>
+4: Define a new entity. An entity is analogous to an object in OOP.<br/>
+5: the entity interacts with other entities using ports. input ports are used to receive information and output ports are used to send information.<br/>
+6: define two inputs of type std_logic.<br/>
+7: define one output of type std_logic.<br/>
+11: the architecture is the implementation of the object's behavior. it's name (arch) is redundant as only one architecture is allowed.<br/>
+13: the actual implementation of an 'and' gate. <strong>every time</strong> one of the inputs changes the output is recalcualted.</p>
 
 <p>By using a synthesis tool we can convert this code to a hardware specification:</p>
 
-<p>[image]</p>
+<p><img src="/images/vhdl_post/and.png"></p>
 
-<h2>Think Parallel - a simple adder</h2>
+<h2>Think parallel - a simple adder</h2>
 
-<p>An adder has two single bit inputs and a two-bit output: sum_0, sum_1
-Here's a mapping for all possible inputs and outputs:</p>
+<p>We'll implement an adder that takes two bit-sized inputs (x and y) and adds them to a two-bit output (sum_0 and sum_1).
+The following table demonstrates the adder's functionality:</p>
 
-<p>x + y = sum_1 sum_0 sum as binary sum as int
-0   0   0     0     0             0
-0   1   0     0     0             0
-1   0   0     0     1             1
-1   1   1     0     10            2</p>
+<table>
+    <tr>
+        <th width="50">x</th>
+        <th width="50">y</th>
+        <th width="50">sum_1</th>
+        <th width="50">sum_0</th>
+        <th width="140">sum as binary</th>
+        <th width="140">sum as int</th>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>0</td>
+        <td>10</td>
+        <td>2</td>
+    </tr>
+</table>
 
-<pre><code>library ieee;
-use ieee.std_logic_1164.all;
 
-entity adder is
-port ( 
-    x, y: in std_logic;
-    sum_0, sum_1: out std_logic
-);
-end adder;
 
-architecture arch of adder is 
-begin
 
-    sum_0 &lt;= x xor y;
-    sum_1 &lt;= x and y;
+<br/>
 
-end arch;
-</code></pre>
 
-<p>Look at lines 13-14. When does this code execute? is line 13 executed before line 14?
-The answer is: these lines execute all the time, in parallel!</p>
+<p>Now let's look at the code:</p>
 
-<p>This is a major difference from software written for CPUs, <em>VHDL is concurrent by default</em>.</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Adder  (adder.vhdl)</span> <a href='/downloads/code/adder.vhdl'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='vhdl'><span class='line'><span class="k">library</span> <span class="nn">ieee</span><span class="p">;</span>
+</span><span class='line'><span class="k">use</span> <span class="nn">ieee.std_logic_1164.all</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">entity</span> <span class="nc">adder</span> <span class="k">is</span>
+</span><span class='line'>  <span class="k">port</span> <span class="p">(</span>
+</span><span class='line'>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="k">in</span> <span class="kt">std_logic</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sum_0</span><span class="p">,</span> <span class="n">sum_1</span><span class="o">:</span> <span class="k">out</span> <span class="kt">std_logic</span>
+</span><span class='line'>    <span class="p">);</span>
+</span><span class='line'><span class="k">end</span> <span class="nc">adder</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">architecture</span> <span class="nc">arch</span> <span class="k">of</span> <span class="nc">adder</span> <span class="k">is</span>
+</span><span class='line'><span class="k">begin</span>
+</span><span class='line'>  <span class="n">sum_0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="k">xor</span> <span class="n">y</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">sum_1</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="k">and</span> <span class="n">y</span><span class="p">;</span>
+</span><span class='line'><span class="k">end</span> <span class="nc">arch</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Look at lines 13-14. When does this code execute? Is line 13 executed before line 14?<br/>
+The answer is: these lines execute all the time, <strong>in parallel!</strong></p>
+
+<blockquote><p>This is a major difference from software written for CPUs:<br/>
+<strong>VHDL is concurrent by default</strong>.</p></blockquote>
 
 <p>VHDL has the notion of <em>concurrent</em> statements and <em>sequential</em> statements. Sequential statments can be used to implement state machines and other sequential procedures. We'll see an example later on.</p>
 
 <h2>Testing using sequential code</h2>
 
-<p>VHDL programmers (often called designers) write tests frequently. they call them 'test benches' or 'simulations'.</p>
+<p>VHDL programmers (often called designers) write tests frequently. They call them 'test benches' or 'simulations'.</p>
 
 <p>The test will be a separate entity. In order to verify the adder's functionality we'll have to drive different inputs and check the sum.</p>
 
-<p>CODE HERE</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>And Gate  (test_adder.vhdl)</span> <a href='/downloads/code/test_adder.vhdl'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+</pre></td><td class='code'><pre><code class='vhdl'><span class='line'><span class="k">library</span> <span class="nn">ieee</span><span class="p">;</span>
+</span><span class='line'><span class="k">use</span> <span class="nn">ieee.std_logic_1164.all</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">entity</span> <span class="nc">adder_test</span> <span class="k">is</span>
+</span><span class='line'><span class="k">end</span> <span class="nc">adder_test</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">architecture</span> <span class="nc">arch</span> <span class="k">of</span> <span class="nc">adder_test</span> <span class="k">is</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">component</span> <span class="nc">adder</span> <span class="k">is</span>
+</span><span class='line'>    <span class="k">port</span> <span class="p">(</span>
+</span><span class='line'>      <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="k">in</span> <span class="kt">std_logic</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">sum_0</span><span class="p">,</span> <span class="n">sum_1</span><span class="o">:</span> <span class="k">out</span> <span class="kt">std_logic</span>
+</span><span class='line'>    <span class="p">);</span>
+</span><span class='line'>  <span class="k">end</span> <span class="k">component</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">signal</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sum_0</span><span class="p">,</span> <span class="n">sum_1</span><span class="o">:</span> <span class="kt">std_logic</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="n">adder_0</span><span class="o">:</span> <span class="n">adder</span> <span class="k">port</span> <span class="k">map</span> <span class="p">(</span>
+</span><span class='line'>      <span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=&gt;</span> <span class="n">y</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">sum_0</span> <span class="o">=&gt;</span> <span class="n">sum_0</span><span class="p">,</span> <span class="n">sum_1</span> <span class="o">=&gt;</span> <span class="n">sum_1</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">process</span>
+</span><span class='line'>    <span class="k">begin</span>
+</span><span class='line'>      <span class="n">x</span> <span class="o">&lt;=</span> <span class="sc">&#39;1&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">y</span> <span class="o">&lt;=</span> <span class="sc">&#39;1&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">assert</span> <span class="n">sum_1</span> <span class="o">=</span> <span class="sc">&#39;1&#39;</span> <span class="k">and</span> <span class="n">sum_0</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span>
+</span><span class='line'>        <span class="n">report</span> <span class="s">&quot;result should be 2&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">x</span> <span class="o">&lt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">y</span> <span class="o">&lt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">assert</span> <span class="n">sum_1</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span> <span class="k">and</span> <span class="n">sum_0</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span>
+</span><span class='line'>        <span class="n">report</span> <span class="s">&quot;result should be 0&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">x</span> <span class="o">&lt;=</span> <span class="sc">&#39;1&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">y</span> <span class="o">&lt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">assert</span> <span class="n">sum_1</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span> <span class="k">and</span> <span class="n">sum_0</span> <span class="o">=</span> <span class="sc">&#39;1&#39;</span>
+</span><span class='line'>        <span class="n">report</span> <span class="s">&quot;result should be 1&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">x</span> <span class="o">&lt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">y</span> <span class="o">&lt;=</span> <span class="sc">&#39;1&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">assert</span> <span class="n">sum_1</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span> <span class="k">and</span> <span class="n">sum_0</span> <span class="o">=</span> <span class="sc">&#39;1&#39;</span>
+</span><span class='line'>        <span class="n">report</span> <span class="s">&quot;result should be 1&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">wait</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">end</span> <span class="k">process</span><span class="p">;</span>
+</span><span class='line'><span class="k">end</span> <span class="nc">arch</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>9-14: repetition of the adder's interface (VHDL isn't very DRY)
-16: signals are wires that the test can manipulate. their type is std_logic so they can be set to zero or one
-19-22: a port map connects the signals to the adder. The signals are named exactly as the adder's ports (the syntax: SIGNAL_NAME => PORT_NAME)
-24: the process definition. A process contains a list of sequential statements. Multiple processes can run concurrently.
-26-27: signal assignments.
-28: signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is more a feature than a bug as it allows doing atomic changes over multiple signals.
-29: make sure the sum changed</p>
+<p>9-14: repetition of the adder's interface (VHDL isn't very DRY)<br/>
+16: signals are wires that the test can manipulate. their type is std_logic (a bit)<br/>
+19-22: a port map connects the signals to the adder. The signals are named exactly as the adder's ports (the syntax: SIGNAL_NAME => PORT_NAME)<br/>
+24: the process definition. A process contains a list of sequential statements. Multiple processes can run concurrently.<br/>
+26-27: signal assignments.<br/>
+28: signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.<br/>
+29: assert the sum changed</p>
 
 <p>The following lines test the remaining test cases.</p>
 
 <p>Here's the simulation in wave form:</p>
 
-<p>IMAGE here</p>
+<p><img src="/images/vhdl_post/adder_test.png"></p>
 
 <h2>The game of life</h2>
 

@@ -6,17 +6,15 @@ comments: true
 categories: [VHDL, hardware, crazy]
 ---
 
-
-About a week ago I've decided to learn VHDL and as an exercise, implement 'The game of life'. 
+A week ago I've decided to learn VHDL and as an exercise, implement 'The game of life'.  
 VHDL is a hardware definition language. Meaning, a language that is compiled to hardware. 
 
-*Why write this post? (or why I'm a mazochist as my friends ask)*
-I thought it'd be interesting to see what it takes to develop a chip. I was specifically curious about the programming model and mindset.
+**Why write this post?**  
+I thought it'd be interesting to see what it takes to develop a chip. Coming from software, I was specifically curious about the programming model and mindset.  
+I think every programmer should be familiar with the layers he relies on; Not every Python programmer knows C, And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.
 
-I think every programmer should be familiar with the layers he relies on. Not every Python programmer knows C. And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.
-
-*pre-requisites*
-I'm going to assume you know nothing about hardware and a little about software.
+**Required knowledge**  
+I'm going to assume you know nothing about hardware and a little about software.  
 VHDL is based on Ada so you might even find it familiar.
 
 Booleans all the way down
@@ -25,97 +23,119 @@ Booleans all the way down
 Most hardware these days deeply relies on boolean logic, here's why:
 
 * Boolean algebra has been around for ages - simple boolean operations like 'and', 'or' and 'not' can compose incredibly sophisticated algorithms (modems, calculators, CPUs!).
-* Passing boolean data is easy in hardware, as you either pass electricity through a line to indicate a **true** state and stop passing electricity to indicate **false**.
+* Passing boolean data is easy in hardware. you pass electricity through a wire to indicate a **true** state and stop passing electricity to indicate a **false** state.
 
-(Light bulb moment): ever wondered why integers in software are powers of two? or what's the difference between 32bit and 64bit? 
-
-A CPU has a fixed amount of wires (32/64) dedicated to represent data (a.k.a word size). each wire represents a bit that can be true or false (1 or 0). The binary numeral system is used to represent a number in a bunch of 1s and 0s.
+**Light bulb moment: ever wondered why integers in software are powers of two?**  
+A CPU has a fixed amount of wires (32/64) dedicated to represent data (a.k.a word size).  
+each wire represents a bit that can be true or false (1 or 0).  
+The binary numeral system is used to represent a number in a bunch of 1s and 0s.
 
 Dive into VHDL - the life of a gate
 -----------------------------------
 
 Let's start off with an implementation of an 'and' gate:
 
-{% include_code And Gate lang:ada and.vhdl %}
+{% include_code And Gate lang:vhdl and.vhdl %}
 
 What's happening in the code line by line:
 
-1-2: Include the module that exports the std_logic type which is a simple bit (can be 0 or 1).
-
-4: Define a new entity. An entity is analogous to an object in OOP. 
-
-5: the entity interacts with other entities using ports. input ports are used to receive information and output ports are used to send information.
-
-6: define two inputs of type std_logic.
-
-7: define one output of type std_logic.
-
-14: the architecture is the implementation of the object's behavior. it's name (arch) is redundant as only one architecture is allowed.
-16: the actual implementation of an 'and' gate. every time one of the inputs changes the output is recalcualted.
+1-2: Include the module that exports the std_logic type which is a simple bit (can be 0 or 1).  
+4: Define a new entity. An entity is analogous to an object in OOP.  
+5: the entity interacts with other entities using ports. input ports are used to receive information and output ports are used to send information.  
+6: define two inputs of type std_logic.  
+7: define one output of type std_logic.  
+11: the architecture is the implementation of the object's behavior. it's name (arch) is redundant as only one architecture is allowed.  
+13: the actual implementation of an 'and' gate. **every time** one of the inputs changes the output is recalcualted.
 
 By using a synthesis tool we can convert this code to a hardware specification:
 
-[image]
+{% img /images/vhdl_post/and.png %}
 
-Think Parallel - a simple adder
+Think parallel - a simple adder
 -------------------------------
 
-An adder has two single bit inputs and a two-bit output: sum_0, sum_1
-Here's a mapping for all possible inputs and outputs:
+We'll implement an adder that takes two bit-sized inputs (x and y) and adds them to a two-bit output (sum_0 and sum_1).
+The following table demonstrates the adder's functionality:
 
-x + y = sum_1 sum_0 sum as binary sum as int
-0   0   0     0     0             0
-0   1   0     0     0             0
-1   0   0     0     1             1
-1   1   1     0     10            2
+<table>
+	<tr>
+		<th width="50">x</th>
+		<th width="50">y</th>
+		<th width="50">sum_1</th>
+		<th width="50">sum_0</th>
+		<th width="140">sum as binary</th>
+		<th width="140">sum as int</th>
+	</tr>
+	<tr>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td>0</td>
+		<td>1</td>
+		<td>0</td>
+		<td>1</td>
+		<td>1</td>
+		<td>1</td>
+	</tr>
+	<tr>
+		<td>1</td>
+		<td>0</td>
+		<td>0</td>
+		<td>1</td>
+		<td>1</td>
+		<td>1</td>
+	</tr>
+	<tr>
+		<td>1</td>
+		<td>1</td>
+		<td>1</td>
+		<td>0</td>
+		<td>10</td>
+		<td>2</td>
+	</tr>
+</table>
 
-	library ieee;
-	use ieee.std_logic_1164.all;
+<br/>
 
-	entity adder is
-	port ( 
-		x, y: in std_logic;
-		sum_0, sum_1: out std_logic
-	);
-	end adder;
+Now let's look at the code:
 
-	architecture arch of adder is 
-	begin
+{% include_code Adder lang:vhdl adder.vhdl %}
 
-	    sum_0 <= x xor y;
-		sum_1 <= x and y;
-		
-	end arch;
+Look at lines 13-14. When does this code execute? Is line 13 executed before line 14?  
+The answer is: these lines execute all the time, **in parallel!**
 
-Look at lines 13-14. When does this code execute? is line 13 executed before line 14?
-The answer is: these lines execute all the time, in parallel! 
-
-This is a major difference from software written for CPUs, *VHDL is concurrent by default*.
+> This is a major difference from software written for CPUs:  
+> **VHDL is concurrent by default**.
 
 VHDL has the notion of *concurrent* statements and *sequential* statements. Sequential statments can be used to implement state machines and other sequential procedures. We'll see an example later on.
 
 Testing using sequential code
 -----------------------------
 
-VHDL programmers (often called designers) write tests frequently. they call them 'test benches' or 'simulations'.
+VHDL programmers (often called designers) write tests frequently. They call them 'test benches' or 'simulations'.
 
 The test will be a separate entity. In order to verify the adder's functionality we'll have to drive different inputs and check the sum.
 
-CODE HERE
+{% include_code And Gate lang:vhdl test_adder.vhdl %}
 
-9-14: repetition of the adder's interface (VHDL isn't very DRY)
-16: signals are wires that the test can manipulate. their type is std_logic so they can be set to zero or one
-19-22: a port map connects the signals to the adder. The signals are named exactly as the adder's ports (the syntax: SIGNAL_NAME => PORT_NAME)
-24: the process definition. A process contains a list of sequential statements. Multiple processes can run concurrently.
-26-27: signal assignments. 
-28: signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is more a feature than a bug as it allows doing atomic changes over multiple signals.
-29: make sure the sum changed
+9-14: repetition of the adder's interface (VHDL isn't very DRY)  
+16: signals are wires that the test can manipulate. their type is std_logic (a bit)  
+19-22: a port map connects the signals to the adder. The signals are named exactly as the adder's ports (the syntax: SIGNAL_NAME => PORT_NAME)  
+24: the process definition. A process contains a list of sequential statements. Multiple processes can run concurrently.  
+26-27: signal assignments.  
+28: signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.  
+29: assert the sum changed
 
 The following lines test the remaining test cases. 
 
 Here's the simulation in wave form:
 
-IMAGE here
+{% img /images/vhdl_post/adder_test.png %}
 
 The game of life
 ----------------
