@@ -4,7 +4,7 @@
   <title><![CDATA[Alon Horev]]></title>
   <link href="http://alon.horev.net/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-03T23:10:10+02:00</updated>
+  <updated>2012-12-04T12:35:55+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -18,11 +18,7 @@
     <link href="http://alon.horev.net/blog/2012/12/03/a-hardware-lesson-for-software-developers-from-logical-gates-to-the-game-of-life/"/>
     <updated>2012-12-03T23:04:00+02:00</updated>
     <id>http://alon.horev.net/blog/2012/12/03/a-hardware-lesson-for-software-developers-from-logical-gates-to-the-game-of-life</id>
-    <content type="html"><![CDATA[<p>=================================================================================</p>
-
-<h1>A hardware lesson for software developers: from logical gates to the game of life</h1>
-
-<p>About a week ago I&#8217;ve decided to learn VHDL and as an exercise, implement &#8216;The game of life&#8217;.
+    <content type="html"><![CDATA[<p>About a week ago I&#8217;ve decided to learn VHDL and as an exercise, implement &#8216;The game of life&#8217;.
 VHDL is a hardware definition language. Meaning, a language that is compiled to hardware.</p>
 
 <p><em>Why write this post? (or why I&#8217;m a mazochist as my friends ask)</em>
@@ -52,27 +48,37 @@ VHDL is based on Ada so you might even find it familiar.</p>
 
 <p>Let&#8217;s start off with an implementation of an &#8216;and&#8217; gate:</p>
 
-<p>1   library ieee;
-2   use ieee.std_logic_1164.all;</p>
+<figure class='code'><figcaption><span>And Gate  (and.vhdl)</span> <a href='http://alon.horev.net/downloads/code/and.vhdl'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ada'><span class='line'><span class="n">library</span> <span class="n">ieee</span><span class="p">;</span>
+</span><span class='line'><span class="kn">use</span> <span class="nn">ieee.std_logic_1164.all</span><span class="p">;</span>   
+</span><span class='line'>
+</span><span class='line'><span class="n">entity</span> <span class="n">and_entity</span> <span class="kr">is</span>
+</span><span class='line'>  <span class="n">port</span><span class="p">(</span> 
+</span><span class='line'>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="ow">in</span> <span class="n">std_logic</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">result</span><span class="p">:</span> <span class="kr">out</span> <span class="n">std_logic</span>
+</span><span class='line'>    <span class="p">);</span>
+</span><span class='line'><span class="kr">end</span> <span class="nf">and_entity</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">architecture</span> <span class="n">arch</span> <span class="kr">of</span> <span class="n">and_entity</span> <span class="kr">is</span>
+</span><span class='line'><span class="kr">begin</span>
+</span><span class='line'>  <span class="n">result</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="ow">and</span> <span class="n">y</span><span class="p">;</span>
+</span><span class='line'><span class="kr">end</span> <span class="nf">arch</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>4   entity and_entity is
-5   port( <br/>
-6     x, y: in std_logic;
-7      result: out std_logic</p>
-
-<pre><code>);
-end and_entity;
-</code></pre>
-
-<p>14  architecture arch of and_entity is</p>
-
-<pre><code>begin
-</code></pre>
-
-<p>16    result &lt;= x and y;</p>
-
-<pre><code>end arch;
-</code></pre>
 
 <p>What&#8217;s happening in the code line by line:</p>
 

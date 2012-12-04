@@ -7,11 +7,6 @@ categories: [VHDL, hardware, crazy]
 ---
 
 
-
-=================================================================================
-A hardware lesson for software developers: from logical gates to the game of life
-=================================================================================
-
 About a week ago I've decided to learn VHDL and as an exercise, implement 'The game of life'. 
 VHDL is a hardware definition language. Meaning, a language that is compiled to hardware. 
 
@@ -41,30 +36,20 @@ Dive into VHDL - the life of a gate
 
 Let's start off with an implementation of an 'and' gate:
 
-1	library ieee;
-2	use ieee.std_logic_1164.all;	
-
-4	entity and_entity is
-5	port(	
-6	  x, y: in std_logic;
-7      result: out std_logic
-	);
-	end and_entity;
-
-14	architecture arch of and_entity is
-	begin
-
-16	  result <= x and y;
-
-	end arch;
+{% include_code And Gate lang:ada and.vhdl %}
 
 What's happening in the code line by line:
 
 1-2: Include the module that exports the std_logic type which is a simple bit (can be 0 or 1).
+
 4: Define a new entity. An entity is analogous to an object in OOP. 
+
 5: the entity interacts with other entities using ports. input ports are used to receive information and output ports are used to send information.
+
 6: define two inputs of type std_logic.
+
 7: define one output of type std_logic.
+
 14: the architecture is the implementation of the object's behavior. it's name (arch) is redundant as only one architecture is allowed.
 16: the actual implementation of an 'and' gate. every time one of the inputs changes the output is recalcualted.
 
