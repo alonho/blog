@@ -4,7 +4,7 @@
   <title><![CDATA[Alon Horev]]></title>
   <link href="http://alon.horev.net/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-11T23:06:53+02:00</updated>
+  <updated>2012-12-12T23:16:35+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -19,13 +19,13 @@
     <updated>2012-12-03T23:04:00+02:00</updated>
     <id>http://alon.horev.net/blog/2012/12/03/a-hardware-lesson-for-software-developers-from-logical-gates-to-the-game-of-life</id>
     <content type="html"><![CDATA[<p>A week ago I&#8217;ve decided to learn VHDL and as an exercise, implement <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">The game of life</a>.<br/>
-VHDL is a hardware description language. Basically, It&#8217;s a programming language used by chip designers.</p>
+VHDL is a hardware description language. Basically, it&#8217;s a programming language used by chip designers.</p>
 
 <p><strong>Why learn VHDL?</strong><br/>
 I thought it&#8217;d be interesting to see what it takes to program a chip. Coming from software, I was specifically curious about the programming model and mindset. Think about it, all software eventually translates to cpu instructions. What&#8217;s underneath that?..</p>
 
 <p>It&#8217;s my belief that every programmer should be familiar with the layers he relies on.<br/>
-Not every Python programmer knows C, And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.</p>
+Not every Python programmer knows C, and not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.</p>
 
 <p><strong>Required knowledge</strong><br/>
 I&#8217;m going to assume you know nothing about hardware and a little about software.<br/>
@@ -197,11 +197,11 @@ Sequential statments can be used to implement state machines and other sequentia
 
 <h2>Testing using sequential code</h2>
 
-<p>The hardware manufacturing phase of a chip is long and expensive, therefore, VHDL programmers (often called designers) write tests (tests are often called &#8216;testbenches&#8217; or &#8216;simulations&#8217;).</p>
+<p>The hardware manufacturing phase of a chip is long and expensive, therefore, VHDL programmers (often called designers) write tests (often called &#8216;testbenches&#8217; or &#8216;simulations&#8217;).</p>
 
-<p>The following test code will verify the adder&#8217;s functionality by driving different inputs and verifying the output:</p>
+<p>The following test code will verify the adder&#8217;s functionality by driving different inputs and verifying the output (explanation ahead):</p>
 
-<figure class='code'><figcaption><span>And Gate  (test_adder.vhdl)</span> <a href='http://alon.horev.net/downloads/code/test_adder.vhdl'>download</a></figcaption>
+<figure class='code'><figcaption><span>Test Adder  (test_adder.vhdl)</span> <a href='http://alon.horev.net/downloads/code/test_adder.vhdl'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -313,12 +313,11 @@ Sequential statments can be used to implement state machines and other sequentia
 9-14: Repetition of the adder&#8217;s interface (VHDL isn&#8217;t very DRY)<br/>
 16: Signals are wires that the test can manipulate. their type is std_logic (a bit)<br/>
 19-22: A port map connects the signals to the adder&#8217;s ports. I named the signals exactly as the adder&#8217;s ports.<br/>
-24: The process definition. A process contains a list of <strong>sequential</strong> statements. Multiple processes can run concurrently.<br/>
+24: The process definition. A process contains a list of <strong>sequential</strong> statements. Multiple processes run concurrently.<br/>
 26-27: Signal assignments.<br/>
 28: Signals have an interesting behavior where the assignment takes effect only when calling &#8216;wait&#8217;. This is a feature and not a bug as it allows doing atomic changes over multiple signals.<br/>
-29: assert the sum changed</p>
-
-<p>The following lines test the remaining test cases.</p>
+29: Assert the sum changed.<br/>
+30 Until the end: Test the remaining cases.</p>
 
 <p>Here&#8217;s the simulation in wave form:</p>
 
@@ -326,7 +325,7 @@ Sequential statments can be used to implement state machines and other sequentia
 
 <p><strong>Note</strong>: Some VHDL statements are not <em>synthesizable</em>, meaning they cannot be converted to hardware and can only be used for simulations.<br/>
 An example is the <em>wait</em> statement. A 1 nano second sleep cannot be expressed solely by logical gates.
-The solution for time-aware components is connecting to a high speed clock (Implemented using a <a href="http://en.wikipedia.org/wiki/Crystal_oscillator">Crystal oscillator</a>).</p>
+The solution for time-aware components is connecting to a high speed clock (Implemented using a <a href="http://en.wikipedia.org/wiki/Crystal_oscillator">Crystal oscillator</a>), we&#8217;ll see an example ahead.</p>
 
 <h2>The game of life</h2>
 
@@ -334,14 +333,14 @@ The solution for time-aware components is connecting to a high speed clock (Impl
 
 <ol>
 <li>The board is a matrix of booleans representing cells.</li>
-<li>For each cycle: the next board is generated by iterating over the matrix, for each cell: count it&#8217;s neighbors and determine if it should be alive or dead.</li>
+<li>For each cycle: the next board is generated by iterating over the matrix, for each cell: count it&#8217;s neighbors and determine if it should live or die.</li>
 </ol>
 
 
 <p>When trying to apply this design in VHDL I quickly ran into brick walls. A sequential iteration over an entire matrix is not the VHDL &#8216;way&#8217;. My guess is that a sequential design would generate much more logical gates and perhaps even be slower.</p>
 
-<blockquote><p>Software is often bound by memory and CPU<br/>
-Chip design is often bound by gates and timing issues.</p></blockquote>
+<blockquote><p>Software is often bound by memory and CPU.<br/>
+Chip design is often bound by the amount of gates and timing issues which surface when signals travel through large amounts of gates.</p></blockquote>
 
 <p>VHDL encourages you to build small components and inter-connect them where needed.<br/>
 each component has it&#8217;s own hardware resources and works in parallel to others.</p>
@@ -349,14 +348,14 @@ each component has it&#8217;s own hardware resources and works in parallel to ot
 <p>The design I came up with is the following:</p>
 
 <ol>
-<li><em>Cell</em> - is an entity. connected to it&#8217;s neighbors via ports. The cell waits for a signal, counts his live neighbors and sets it&#8217;s live state.</li>
-<li><em>Board</em> - is another entity. contains a matrix of cells. all it does is inter-connects them.</li>
+<li><em>Cell</em> - Is an entity. Connected to it&#8217;s neighbors via ports. The cell waits for a clock signal, counts his live neighbors and sets it&#8217;s alive state.</li>
+<li><em>Board</em> - Is another entity. Contains a matrix of cells. All it does is inter-connects them.</li>
 </ol>
 
 
 <p>Here&#8217;s the cell&#8217;s code:</p>
 
-<figure class='code'><figcaption><span>Adder  (cell.vhdl)</span> <a href='http://alon.horev.net/downloads/code/cell.vhdl'>download</a></figcaption>
+<figure class='code'><figcaption><span>Cell  (cell.vhdl)</span> <a href='http://alon.horev.net/downloads/code/cell.vhdl'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -422,35 +421,56 @@ each component has it&#8217;s own hardware resources and works in parallel to ot
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>3: generics are variables that can be set upon entity instantiation. somewhat similar to constructor arguments in object oriented languages.<br/>
-19: notice the process gets an argument? a process can state a list of signals (also called a sensitivity list) that should trigger it&#8217;s invocation. that way, the cell will calculate it&#8217;s next state every time the clock changes.<br/>
-20: variables are exactly what you think they. notice we limit the integer&#8217;s range to 8? that&#8217;s because we&#8217;ll have a maximum of 8 neighbors.</p>
+<p>3: Generics are variables that can be set upon entity instantiation. Somewhat similar to constructor arguments in object oriented languages.<br/>
+19: Notice the process gets an argument? A process can state a list of signals (also called a sensitivity list) that should trigger it&#8217;s invocation. That way, the cell will calculate it&#8217;s next state every time the clock changes.<br/>
+20: Variables are exactly what you think they. Notice we limit the integer&#8217;s range to 8? that&#8217;s because we&#8217;ll have a maximum of 8 neighbors. VHDL dedicate only 4 wires for that variable.</p>
 
 <p><img src="http://alon.horev.net/images/vhdl_post/board.png" title="Schematic of a two cell board" ></p>
 
 <h2>Conclusions</h2>
 
-<p>Why create new circuits and not use cpus? power consumption, performance, size, money, response time</p>
+<p><strong>Scalabillity - How the design scales for a large amount of cells?</strong></p>
 
-<blockquote><p>software - write serial code, parallelize when need to scale.<br/>
-hardware - write concurrent code, write serial code where needed.</p></blockquote>
+<p>The software-based solution has several limits:</p>
 
-<p>One of the most challenging concepts in software is concurreny. It&#8217;s interesting how fundamental this topic is to hardware.</p>
+<ul>
+<li>Memory-wise: limited by the amount of memory.</li>
+<li>Speed-wise: iteration is done serially and will be directly proportional to the amount of cells, even if multiple cores are utilized.</li>
+</ul>
 
-<p>Scalabillity - How the design scales for a large amount of cells?
-The software-based solution has several limits:
-memory-wise: limited by the amount of memory
-speed-wise: iteration is done serially and will be directly proportional to the amount of cells. (even if you utilize multiple cores)</p>
 
-<p>The hardware-based solution is said to be scalable. adding more cells results in adding more logical gates. there is no performance overhead and no arbitrary limit on the number of cells in the matrix.</p>
+<p>The hardware-based solution is said to be scalable:</p>
+
+<ul>
+<li>Adding more cells results in adding more logical gates.</li>
+<li>There is no performance overhead and no arbitrary limit on the number of cells in the matrix.</li>
+</ul>
+
+
+<p><strong>Change of mindset</strong><br/>
+One of the most challenging concepts in software is concurreny, it&#8217;s interesting how fundamental this topic is to hardware.</p>
+
+<blockquote><p>Software - Write serial code, parallelize when need to scale.<br/>
+Hardware - Write concurrent code, write serial code where needed.</p></blockquote>
+
+<p><strong>Why bother manufacturing new chips and not re-use CPUs?</strong><br/>
+Here are a few reasons I can come up with:</p>
+
+<ol>
+<li><em>Power consumption</em> of CPUs can render them unusable for many applications (Battery size/life).</li>
+<li><em>Performance</em> of ASICs (Application specific integrated circuits - chips created for a specific task) can work faster compared to CPUs (That&#8217;s why GPUs became popular).</li>
+<li><em>Price</em> per unit can drop drastically for large amounts of ASICs (compare a chip that does bluetooth to an Intel CPU).</li>
+</ol>
+
 
 <h2>Tools</h2>
 
-<p>The eco-system around</p>
+<ul>
+<li>ghdl (for mac!)</li>
+<li>Xilinix on windows or schematic generation</li>
+<li>gtkwave along with ghdl</li>
+</ul>
 
-<p>ghdl (for mac!)
-xilinix on windows or schematic generation
-gtkwave using ghdl</p>
 ]]></content>
   </entry>
   
