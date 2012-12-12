@@ -7,11 +7,13 @@ categories: [VHDL, hardware, crazy]
 ---
 
 A week ago I've decided to learn VHDL and as an exercise, implement [The game of life](http://en.wikipedia.org/wiki/Conway's_Game_of_Life).  
-VHDL is a hardware definition language. Meaning, a language that is compiled to hardware. 
+VHDL is a hardware description language. Basically, It's a programming language used by chip designers.  
 
-**Why write this post?**  
-I thought it'd be interesting to see what it takes to develop a chip. Coming from software, I was specifically curious about the programming model and mindset.  
-I think every programmer should be familiar with the layers he relies on; Not every Python programmer knows C, And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.
+**Why learn VHDL?**  
+I thought it'd be interesting to see what it takes to program a chip. Coming from software, I was specifically curious about the programming model and mindset. Think about it, all software eventually translates to cpu instructions. What's underneath that?..  
+
+It's my belief that every programmer should be familiar with the layers he relies on.  
+Not every Python programmer knows C, And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.
 
 **Required knowledge**  
 I'm going to assume you know nothing about hardware and a little about software.  
@@ -20,14 +22,14 @@ VHDL is based on Ada so you might even find it familiar.
 Booleans all the way down
 -------------------------
 
-Most hardware these days deeply relies on boolean logic, here's why:
+Most hardware these days is based on boolean logic, here's why:
 
 * Boolean algebra has been around for ages - simple boolean operations like 'and', 'or' and 'not' can compose incredibly sophisticated algorithms (calculators, modems, CPUs!).
-* Passing boolean data is easy in hardware. you pass electricity through a wire to indicate a **true** state and stop passing electricity to indicate a **false** state.
+* Passing boolean data is easy in hardware, you pass electricity through a wire to indicate a **true** state and stop passing electricity to indicate a **false** state.
 
 **Light bulb moment: ever wondered why integers in software are powers of two?**  
 A CPU has a fixed amount of wires (32/64) dedicated to represent data (a.k.a word size).  
-each wire represents a bit that can be true or false (1 or 0).  
+Each wire represents a bit that can be true or false (1 or 0).  
 The binary numeral system is used to represent a number in a bunch of 1s and 0s.
 
 Dive into VHDL - the life of a gate
@@ -39,13 +41,13 @@ Let's start off with an implementation of an 'and' gate:
 
 What's happening in the code line by line:
 
-1-2: Include the module that exports the std_logic type which is a simple bit (can be 0 or 1).  
-4: Define a new entity. An entity is analogous to an object in OOP.  
-5: the entity interacts with other entities using ports. input ports are used to receive information and output ports are used to send information.  
-6: define two inputs of type std_logic.  
-7: define one output of type std_logic.  
-11: the architecture is the implementation of the object's behavior. it's name (arch) is redundant as only one architecture is allowed.  
-13: the actual implementation of an 'and' gate. **every time** one of the inputs changes the output is recalcualted.
+1-2: Include the module that exports the std_logic type which represents a bit (can be 0 or 1).  
+4: Define a new entity. **An entity is analogous to an object in object oriented programming**.  
+5: The entity interacts with other entities using ports. Input ports are used to receive information and output ports are used to send information.  
+6: Define two inputs of type std_logic.  
+7: Define one output of type std_logic.  
+11: The architecture is the implementation of the object's behavior. It's name (arch) is redundant as only one architecture is allowed.  
+13: The implementation of an 'and' gate. **Every time** an input changes the output is recalcualted.
 
 By using a synthesis tool we can convert this code to a hardware schematic:
 
@@ -54,15 +56,15 @@ By using a synthesis tool we can convert this code to a hardware schematic:
 Think parallel - a simple adder
 -------------------------------
 
-We'll implement an adder that takes two bit-sized inputs (x and y) and adds them to a two-bit output (sum_0 and sum_1).
+We'll implement an adder that takes two bit-sized inputs (x and y) and adds them to a two-bit output (sum_0 and sum_1. sum_1 is the carry).
 The following table demonstrates the adder's functionality:
 
 <table>
 	<tr>
-		<th width="50">x</th>
-		<th width="50">y</th>
-		<th width="50">sum_1</th>
-		<th width="50">sum_0</th>
+		<th width="60">x</th>
+		<th width="60">y</th>
+		<th width="60">sum_1</th>
+		<th width="60">sum_0</th>
 		<th width="140">sum as binary</th>
 		<th width="140">sum as int</th>
 	</tr>
@@ -109,26 +111,28 @@ Now let's look at the code:
 Look at lines 13-14. When does this code execute? Is line 13 executed before line 14?  
 The answer is: these lines execute all the time, **in parallel!**
 
-> This is a major difference from software written for CPUs:  
+> A major difference between software written for CPUs and VHDL is:  
 > **VHDL is concurrent by default**.
 
-VHDL has the notion of *concurrent* statements and *sequential* statements. Sequential statments can be used to implement state machines and other sequential procedures. We'll see an example later on.
+VHDL has the notion of *concurrent* statements vs. *sequential* statements.  
+Sequential statments can be used to implement state machines and other sequential procedures. 
 
 Testing using sequential code
 -----------------------------
 
-VHDL programmers (often called designers) write tests frequently. They call them 'test benches' or 'simulations'.
+The hardware manufacturing phase of a chip is long and expensive, therefore, VHDL programmers (often called designers) write tests (tests are often called 'testbenches' or 'simulations').  
 
-The test will be a separate entity. In order to verify the adder's functionality we'll have to drive different inputs and check the sum.
+The following test code will verify the adder's functionality by driving different inputs and verifying the output:
 
 {% include_code And Gate lang:vhdl test_adder.vhdl %}
 
-9-14: repetition of the adder's interface (VHDL isn't very DRY)  
-16: signals are wires that the test can manipulate. their type is std_logic (a bit)  
-19-22: a port map connects the signals to the adder. The signals are named exactly as the adder's ports (the syntax: SIGNAL_NAME => PORT_NAME)  
-24: the process definition. A process contains a list of **sequential** statements. Multiple processes can run concurrently.  
-26-27: signal assignments.  
-28: signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.  
+4: Define an entity for the test. This entity has no inputs and outputs.  
+9-14: Repetition of the adder's interface (VHDL isn't very DRY)  
+16: Signals are wires that the test can manipulate. their type is std_logic (a bit)  
+19-22: A port map connects the signals to the adder's ports. I named the signals exactly as the adder's ports.  
+24: The process definition. A process contains a list of **sequential** statements. Multiple processes can run concurrently.  
+26-27: Signal assignments.  
+28: Signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.  
 29: assert the sum changed
 
 The following lines test the remaining test cases. 
@@ -136,6 +140,10 @@ The following lines test the remaining test cases.
 Here's the simulation in wave form:
 
 {% img /images/vhdl_post/adder_test.png 800 300 Waveform of adder_test.vhdl %}
+
+**Note**: Some VHDL statements are not *synthesizable*, meaning they cannot be converted to hardware and can only be used for simulations.  
+An example is the *wait* statement. A 1 nano second sleep cannot be expressed solely by logical gates.
+The solution for time-aware components is connecting to a high speed clock (Implemented using a [Crystal oscillator](http://en.wikipedia.org/wiki/Crystal_oscillator)).
 
 The game of life
 ----------------
@@ -150,24 +158,23 @@ When trying to apply this design in VHDL I quickly ran into brick walls. A seque
 > Software is often bound by memory and CPU  
 > Chip design is often bound by gates and timing issues.
 
-VHDL encourages you to build small components and inter-connect them where needed. each component has it's own hardware resources and works in parallel to others.
+VHDL encourages you to build small components and inter-connect them where needed.  
+each component has it's own hardware resources and works in parallel to others.
 
 The design I came up with is the following:
 
-1. *Cell* - is an entity. connected to it's neighbors via ports. has an independent process for counting the neighbors and setting the next state. 
-2. *Board* - is a matrix of cells. all it does is inter-connects them.
+1. *Cell* - is an entity. connected to it's neighbors via ports. The cell waits for a signal, counts his live neighbors and sets it's live state.
+2. *Board* - is another entity. contains a matrix of cells. all it does is inter-connects them.
 
 Here's the cell's code:
 
 {% include_code Adder lang:vhdl cell.vhdl %}
 
-3: generics are variables that can be set upon entity instantiation. similar to constructor arguments.  
+3: generics are variables that can be set upon entity instantiation. somewhat similar to constructor arguments in object oriented languages.  
 19: notice the process gets an argument? a process can state a list of signals (also called a sensitivity list) that should trigger it's invocation. that way, the cell will calculate it's next state every time the clock changes.  
 20: variables are exactly what you think they. notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors.
 
-
 {% img /images/vhdl_post/board.png Schematic of a two cell board %}
-
 
 Conclusions
 -----------

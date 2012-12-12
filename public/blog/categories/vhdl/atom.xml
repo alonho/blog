@@ -4,7 +4,7 @@
   <title><![CDATA[Category: VHDL | Alon Horev]]></title>
   <link href="http://alon.horev.net/blog/categories/vhdl/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-05T00:11:47+02:00</updated>
+  <updated>2012-12-11T23:06:53+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -19,11 +19,13 @@
     <updated>2012-12-03T23:04:00+02:00</updated>
     <id>http://alon.horev.net/blog/2012/12/03/a-hardware-lesson-for-software-developers-from-logical-gates-to-the-game-of-life</id>
     <content type="html"><![CDATA[<p>A week ago I've decided to learn VHDL and as an exercise, implement <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">The game of life</a>.<br/>
-VHDL is a hardware definition language. Meaning, a language that is compiled to hardware.</p>
+VHDL is a hardware description language. Basically, It's a programming language used by chip designers.</p>
 
-<p><strong>Why write this post?</strong><br/>
-I thought it'd be interesting to see what it takes to develop a chip. Coming from software, I was specifically curious about the programming model and mindset.<br/>
-I think every programmer should be familiar with the layers he relies on; Not every Python programmer knows C, And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.</p>
+<p><strong>Why learn VHDL?</strong><br/>
+I thought it'd be interesting to see what it takes to program a chip. Coming from software, I was specifically curious about the programming model and mindset. Think about it, all software eventually translates to cpu instructions. What's underneath that?..</p>
+
+<p>It's my belief that every programmer should be familiar with the layers he relies on.<br/>
+Not every Python programmer knows C, And not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.</p>
 
 <p><strong>Required knowledge</strong><br/>
 I'm going to assume you know nothing about hardware and a little about software.<br/>
@@ -31,17 +33,17 @@ VHDL is based on Ada so you might even find it familiar.</p>
 
 <h2>Booleans all the way down</h2>
 
-<p>Most hardware these days deeply relies on boolean logic, here's why:</p>
+<p>Most hardware these days is based on boolean logic, here's why:</p>
 
 <ul>
 <li>Boolean algebra has been around for ages - simple boolean operations like 'and', 'or' and 'not' can compose incredibly sophisticated algorithms (calculators, modems, CPUs!).</li>
-<li>Passing boolean data is easy in hardware. you pass electricity through a wire to indicate a <strong>true</strong> state and stop passing electricity to indicate a <strong>false</strong> state.</li>
+<li>Passing boolean data is easy in hardware, you pass electricity through a wire to indicate a <strong>true</strong> state and stop passing electricity to indicate a <strong>false</strong> state.</li>
 </ul>
 
 
 <p><strong>Light bulb moment: ever wondered why integers in software are powers of two?</strong><br/>
 A CPU has a fixed amount of wires (32/64) dedicated to represent data (a.k.a word size).<br/>
-each wire represents a bit that can be true or false (1 or 0).<br/>
+Each wire represents a bit that can be true or false (1 or 0).<br/>
 The binary numeral system is used to represent a number in a bunch of 1s and 0s.</p>
 
 <h2>Dive into VHDL - the life of a gate</h2>
@@ -81,13 +83,13 @@ The binary numeral system is used to represent a number in a bunch of 1s and 0s.
 
 <p>What's happening in the code line by line:</p>
 
-<p>1-2: Include the module that exports the std_logic type which is a simple bit (can be 0 or 1).<br/>
-4: Define a new entity. An entity is analogous to an object in OOP.<br/>
-5: the entity interacts with other entities using ports. input ports are used to receive information and output ports are used to send information.<br/>
-6: define two inputs of type std_logic.<br/>
-7: define one output of type std_logic.<br/>
-11: the architecture is the implementation of the object's behavior. it's name (arch) is redundant as only one architecture is allowed.<br/>
-13: the actual implementation of an 'and' gate. <strong>every time</strong> one of the inputs changes the output is recalcualted.</p>
+<p>1-2: Include the module that exports the std_logic type which represents a bit (can be 0 or 1).<br/>
+4: Define a new entity. <strong>An entity is analogous to an object in object oriented programming</strong>.<br/>
+5: The entity interacts with other entities using ports. Input ports are used to receive information and output ports are used to send information.<br/>
+6: Define two inputs of type std_logic.<br/>
+7: Define one output of type std_logic.<br/>
+11: The architecture is the implementation of the object's behavior. It's name (arch) is redundant as only one architecture is allowed.<br/>
+13: The implementation of an 'and' gate. <strong>Every time</strong> an input changes the output is recalcualted.</p>
 
 <p>By using a synthesis tool we can convert this code to a hardware schematic:</p>
 
@@ -95,15 +97,15 @@ The binary numeral system is used to represent a number in a bunch of 1s and 0s.
 
 <h2>Think parallel - a simple adder</h2>
 
-<p>We'll implement an adder that takes two bit-sized inputs (x and y) and adds them to a two-bit output (sum_0 and sum_1).
+<p>We'll implement an adder that takes two bit-sized inputs (x and y) and adds them to a two-bit output (sum_0 and sum_1. sum_1 is the carry).
 The following table demonstrates the adder's functionality:</p>
 
 <table>
     <tr>
-        <th width="50">x</th>
-        <th width="50">y</th>
-        <th width="50">sum_1</th>
-        <th width="50">sum_0</th>
+        <th width="60">x</th>
+        <th width="60">y</th>
+        <th width="60">sum_1</th>
+        <th width="60">sum_0</th>
         <th width="140">sum as binary</th>
         <th width="140">sum as int</th>
     </tr>
@@ -185,16 +187,17 @@ The following table demonstrates the adder's functionality:</p>
 <p>Look at lines 13-14. When does this code execute? Is line 13 executed before line 14?<br/>
 The answer is: these lines execute all the time, <strong>in parallel!</strong></p>
 
-<blockquote><p>This is a major difference from software written for CPUs:<br/>
+<blockquote><p>A major difference between software written for CPUs and VHDL is:<br/>
 <strong>VHDL is concurrent by default</strong>.</p></blockquote>
 
-<p>VHDL has the notion of <em>concurrent</em> statements and <em>sequential</em> statements. Sequential statments can be used to implement state machines and other sequential procedures. We'll see an example later on.</p>
+<p>VHDL has the notion of <em>concurrent</em> statements vs. <em>sequential</em> statements.<br/>
+Sequential statments can be used to implement state machines and other sequential procedures.</p>
 
 <h2>Testing using sequential code</h2>
 
-<p>VHDL programmers (often called designers) write tests frequently. They call them 'test benches' or 'simulations'.</p>
+<p>The hardware manufacturing phase of a chip is long and expensive, therefore, VHDL programmers (often called designers) write tests (tests are often called 'testbenches' or 'simulations').</p>
 
-<p>The test will be a separate entity. In order to verify the adder's functionality we'll have to drive different inputs and check the sum.</p>
+<p>The following test code will verify the adder's functionality by driving different inputs and verifying the output:</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>And Gate  (test_adder.vhdl)</span> <a href='/downloads/code/test_adder.vhdl'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -303,12 +306,13 @@ The answer is: these lines execute all the time, <strong>in parallel!</strong></
 </span><span class='line'><span class="k">end</span> <span class="nc">arch</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>9-14: repetition of the adder's interface (VHDL isn't very DRY)<br/>
-16: signals are wires that the test can manipulate. their type is std_logic (a bit)<br/>
-19-22: a port map connects the signals to the adder. The signals are named exactly as the adder's ports (the syntax: SIGNAL_NAME => PORT_NAME)<br/>
-24: the process definition. A process contains a list of <strong>sequential</strong> statements. Multiple processes can run concurrently.<br/>
-26-27: signal assignments.<br/>
-28: signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.<br/>
+<p>4: Define an entity for the test. This entity has no inputs and outputs.<br/>
+9-14: Repetition of the adder's interface (VHDL isn't very DRY)<br/>
+16: Signals are wires that the test can manipulate. their type is std_logic (a bit)<br/>
+19-22: A port map connects the signals to the adder's ports. I named the signals exactly as the adder's ports.<br/>
+24: The process definition. A process contains a list of <strong>sequential</strong> statements. Multiple processes can run concurrently.<br/>
+26-27: Signal assignments.<br/>
+28: Signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.<br/>
 29: assert the sum changed</p>
 
 <p>The following lines test the remaining test cases.</p>
@@ -316,6 +320,10 @@ The answer is: these lines execute all the time, <strong>in parallel!</strong></
 <p>Here's the simulation in wave form:</p>
 
 <p><img src="/images/vhdl_post/adder_test.png" width="800" height="300" title="Waveform of adder_test.vhdl" ></p>
+
+<p><strong>Note</strong>: Some VHDL statements are not <em>synthesizable</em>, meaning they cannot be converted to hardware and can only be used for simulations.<br/>
+An example is the <em>wait</em> statement. A 1 nano second sleep cannot be expressed solely by logical gates.
+The solution for time-aware components is connecting to a high speed clock (Implemented using a <a href="http://en.wikipedia.org/wiki/Crystal_oscillator">Crystal oscillator</a>).</p>
 
 <h2>The game of life</h2>
 
@@ -332,13 +340,14 @@ The answer is: these lines execute all the time, <strong>in parallel!</strong></
 <blockquote><p>Software is often bound by memory and CPU<br/>
 Chip design is often bound by gates and timing issues.</p></blockquote>
 
-<p>VHDL encourages you to build small components and inter-connect them where needed. each component has it's own hardware resources and works in parallel to others.</p>
+<p>VHDL encourages you to build small components and inter-connect them where needed.<br/>
+each component has it's own hardware resources and works in parallel to others.</p>
 
 <p>The design I came up with is the following:</p>
 
 <ol>
-<li><em>Cell</em> - is an entity. connected to it's neighbors via ports. has an independent process for counting the neighbors and setting the next state.</li>
-<li><em>Board</em> - is a matrix of cells. all it does is inter-connects them.</li>
+<li><em>Cell</em> - is an entity. connected to it's neighbors via ports. The cell waits for a signal, counts his live neighbors and sets it's live state.</li>
+<li><em>Board</em> - is another entity. contains a matrix of cells. all it does is inter-connects them.</li>
 </ol>
 
 
@@ -409,7 +418,7 @@ Chip design is often bound by gates and timing issues.</p></blockquote>
 </span><span class='line'><span class="k">end</span> <span class="nc">arch</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>3: generics are variables that can be set upon entity instantiation. similar to constructor arguments.<br/>
+<p>3: generics are variables that can be set upon entity instantiation. somewhat similar to constructor arguments in object oriented languages.<br/>
 19: notice the process gets an argument? a process can state a list of signals (also called a sensitivity list) that should trigger it's invocation. that way, the cell will calculate it's next state every time the clock changes.<br/>
 20: variables are exactly what you think they. notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors.</p>
 
