@@ -4,7 +4,7 @@
   <title><![CDATA[Category: crazy | Alon Horev]]></title>
   <link href="http://alon.horev.net/blog/categories/crazy/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-13T11:23:53+02:00</updated>
+  <updated>2012-12-13T13:29:54+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -22,7 +22,7 @@
 VHDL is a hardware description language. Basically, it's a programming language used by chip designers.</p>
 
 <p><strong>Why learn VHDL?</strong><br/>
-I thought it'd be interesting to see what it takes to program a chip. Coming from software, I was specifically curious about the programming model and mindset. Think about it, all software eventually translates to cpu instructions. What's underneath that?..</p>
+I thought it'd be interesting to see what it takes to program a chip. Coming from software, I was specifically curious about the programming model and mind set. Think about it, all software eventually translates to CPU instructions. What's underneath that?..</p>
 
 <p>It's my belief that every programmer should be familiar with the layers he relies on.<br/>
 Not every Python programmer knows C, and not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.</p>
@@ -83,13 +83,13 @@ The binary numeral system is used to represent a number in a bunch of 1s and 0s.
 
 <p>What's happening in the code line by line:</p>
 
-<p>1-2: Include the module that exports the std_logic type which represents a bit (can be 0 or 1).<br/>
-4: Define a new entity. <strong>An entity is analogous to an object in object oriented programming</strong>.<br/>
-5: The entity interacts with other entities using ports. Input ports are used to receive information and output ports are used to send information.<br/>
-6: Define two inputs of type std_logic.<br/>
-7: Define one output of type std_logic.<br/>
-11: The architecture is the implementation of the object's behavior. It's name (arch) is redundant as only one architecture is allowed.<br/>
-13: The implementation of an 'and' gate. <strong>Every time</strong> an input changes the output is recalcualted.</p>
+<p><strong>1-2</strong>: Include the module that exports the std_logic type which represents a bit (can be 0 or 1).<br/>
+<strong>4</strong>: Define a new entity. <strong>An entity is analogous to an object in object oriented programming</strong>.<br/>
+<strong>5</strong>: The entity interacts with other entities using ports. Input ports are used to receive information and output ports are used to send information.<br/>
+<strong>6</strong>: Define two inputs of type std_logic.<br/>
+<strong>7</strong>: Define one output of type std_logic.<br/>
+<strong>11</strong>: The architecture is the implementation of the object's behavior. It's name (arch) is redundant as only one architecture is allowed.<br/>
+<strong>13</strong>: The implementation of an 'and' gate. <strong>Every time</strong> an input changes the output is recalculated.</p>
 
 <p>By using a synthesis tool we can convert this code to a hardware schematic:</p>
 
@@ -191,11 +191,11 @@ The answer is: these lines execute all the time, <strong>in parallel!</strong></
 <strong>VHDL is concurrent by default</strong>.</p></blockquote>
 
 <p>VHDL has the notion of <em>concurrent</em> statements vs. <em>sequential</em> statements.<br/>
-Sequential statments can be used to implement state machines and other sequential procedures.</p>
+Sequential statements can be used to implement state machines and other sequential procedures.</p>
 
 <h2>Testing using sequential code</h2>
 
-<p>The hardware manufacturing phase of a chip is long and expensive, therefore, VHDL programmers (often called designers) write tests (often called 'testbenches' or 'simulations').</p>
+<p>The hardware manufacturing phase of a chip is long and expensive, therefore, VHDL programmers (often called designers) write tests (often called 'test-benches' or 'simulations').</p>
 
 <p>The following test code will verify the adder's functionality by driving different inputs and verifying the output (explanation ahead):</p>
 
@@ -306,15 +306,15 @@ Sequential statments can be used to implement state machines and other sequentia
 </span><span class='line'><span class="k">end</span> <span class="nc">arch</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>4: Define an entity for the test. This entity has no inputs and outputs.<br/>
-9-14: Repetition of the adder's interface (VHDL isn't very DRY)<br/>
-16: Signals are wires that the test can manipulate. their type is std_logic (a bit)<br/>
-19-22: A port map connects the signals to the adder's ports. I named the signals exactly as the adder's ports.<br/>
-24: The process definition. A process contains a list of <strong>sequential</strong> statements. Multiple processes run concurrently.<br/>
-26-27: Signal assignments.<br/>
-28: Signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.<br/>
-29: Assert the sum changed.<br/>
-30 Until the end: Test the remaining cases.</p>
+<p><strong>4</strong>: Define an entity for the test. This entity has no inputs and outputs.<br/>
+<strong>9-14</strong>: Repetition of the adder's interface (VHDL isn't very DRY)<br/>
+<strong>16</strong>: Signals are wires that the test can manipulate. their type is std_logic (a bit)<br/>
+<strong>19-22</strong>: A port map connects the signals to the adder's ports. I named the signals exactly as the adder's ports.<br/>
+<strong>24</strong>: The process definition. A process contains a list of <strong>sequential</strong> statements. Multiple processes run concurrently.<br/>
+<strong>26-27</strong>: Signal assignments.<br/>
+<strong>28</strong>: Signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.<br/>
+<strong>29</strong>: Assert the sum changed.<br/>
+<strong>30 Until the end</strong>: Test the remaining cases.</p>
 
 <p>Here's the simulation in wave form:</p>
 
@@ -337,7 +337,7 @@ The solution for time-aware components is connecting to a high speed clock (Impl
 <p>When trying to apply this design in VHDL I quickly ran into brick walls. A sequential iteration over an entire matrix is not the VHDL 'way'. My guess is that a sequential design would generate much more logical gates and perhaps even be slower.</p>
 
 <blockquote><p>Software is often bound by memory and CPU.<br/>
-Chip design is often bound by the amount of gates and timing issues which surface when signals travel through large amounts of gates.</p></blockquote>
+Chip design is often bound by the amount of gates and timing issues, which surface when signals travel through large amounts of gates.</p></blockquote>
 
 <p>VHDL encourages you to build small components and inter-connect them where needed.<br/>
 each component has it's own hardware resources and works in parallel to others.</p>
@@ -417,15 +417,28 @@ each component has it's own hardware resources and works in parallel to others.<
 </span><span class='line'><span class="k">end</span> <span class="nc">arch</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>3: Generics are variables that can be set upon entity instantiation. Somewhat similar to constructor arguments in object oriented languages.<br/>
-19: Notice the process gets an argument? A process can state a list of signals (also called a sensitivity list) that should trigger it's invocation. That way, the cell will calculate it's next state every time the clock changes.<br/>
-20: Variables are exactly what you think they. Notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors. VHDL dedicate only 4 wires for that variable.</p>
+<p><strong>3</strong>: <em>Generics</em> are variables that can be set upon entity instantiation. Somewhat similar to constructor arguments in object oriented languages.<br/>
+<strong>19</strong>: Notice the process gets an argument? A process can state a list of signals (also called a <em>sensitivity list</em>) that should trigger it's invocation. That way, the cell will calculate it's next state every time the clock changes.<br/>
+<strong>20</strong>: Variables are exactly what you think they. Notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors. VHDL will dedicate only 4 wires for that variable.</p>
+
+<h2>Composing a board from cells</h2>
+
+<p>I'll spare you of the <a href="https://github.com/alonho/game_of_life_vhdl/blob/master/board.vhdl">board's code</a> as it contain some boilerplate. Instead, I'll show it's hardware specification:</p>
 
 <p><img src="/images/vhdl_post/board.png" title="Schematic of a two cell board" ></p>
 
+<p>What are you seeing:</p>
+
+<ul>
+<li>Each cell is a component encapsulating it's logical gates.</li>
+<li>Each cell is connected to it's neighbors through signals. The left cell is connected to the right cell's alive signal and vice versa.</li>
+<li>All cells are connected to the same clock, which triggers the calculation of the next state.</li>
+</ul>
+
+
 <h2>Conclusions</h2>
 
-<p><strong>Scalabillity - How the design scales for a large amount of cells?</strong></p>
+<p><strong>Scalability - How the design scales for a large amount of cells?</strong></p>
 
 <p>The software-based solution has several limits:</p>
 
@@ -443,14 +456,13 @@ each component has it's own hardware resources and works in parallel to others.<
 </ul>
 
 
-<p><strong>Change of mindset</strong><br/>
-One of the most challenging concepts in software is concurreny, it's interesting how fundamental this topic is to hardware.</p>
+<p><strong>How different is the mind-set?</strong><br/>
+One of the most challenging concepts in software is concurrency, it's interesting how fundamental this topic is to hardware. Here's how I see it:</p>
 
 <blockquote><p>Software - write serial code, parallelize when need to scale.<br/>
 Hardware - write concurrent code, write serial code where needed.</p></blockquote>
 
-<p><strong>Why bother manufacturing new chips and not re-use CPUs?</strong><br/>
-Here are a few reasons I can come up with:</p>
+<p><strong>Why bother manufacturing new chips and not re-use CPUs?</strong></p>
 
 <ol>
 <li><em>Power consumption</em> of CPUs can render them unusable for many applications (Battery size/life).</li>
@@ -464,7 +476,7 @@ Here are a few reasons I can come up with:</p>
 <ul>
 <li>ghdl (for mac!) is a VHDL compiler</li>
 <li>Xilinix on windows for schematic generation</li>
-<li>gtkwave for visualing simulations</li>
+<li>gtkwave for visualizing simulations</li>
 </ul>
 
 ]]></content>
