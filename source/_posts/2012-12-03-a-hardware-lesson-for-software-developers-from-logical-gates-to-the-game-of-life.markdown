@@ -191,9 +191,9 @@ The hardware-based solution is said to be scalable:
 * There is no performance overhead and no arbitrary limit on the number of cells in the matrix.
 
 **Change of mindset**  
-One of the most challenging concepts in software is concurreny, it's interesting how fundamental this topic is to hardware.  
-> Software - Write serial code, parallelize when need to scale.  
-> Hardware - Write concurrent code, write serial code where needed.
+One of the most challenging concepts in software is concurreny, it's interesting how fundamental this topic is to hardware.
+> Software - write serial code, parallelize when need to scale.  
+> Hardware - write concurrent code, write serial code where needed.
 
 **Why bother manufacturing new chips and not re-use CPUs?**  
 Here are a few reasons I can come up with:
@@ -205,6 +205,6 @@ Here are a few reasons I can come up with:
 Tools
 -----
 
-* ghdl (for mac!)
-* Xilinix on windows or schematic generation
-* gtkwave along with ghdl 
+* ghdl (for mac!) is a VHDL compiler
+* Xilinix on windows for schematic generation
+* gtkwave for visualing simulations
