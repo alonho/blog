@@ -200,7 +200,7 @@ Here are a few reasons I can come up with:
 
 1. *Power consumption* of CPUs can render them unusable for many applications (Battery size/life).  
 2. *Performance* of ASICs (Application specific integrated circuits - chips created for a specific task) can work faster compared to CPUs (That's why GPUs became popular).
-3. *Price* per unit can drop drastically for large amounts of ASICs (compare a chip that does bluetooth to an Intel CPU).
+3. *Price per unit* can drop drastically for large amounts of ASICs (compare a chip that does bluetooth to an Intel CPU).
 
 Tools
 -----
