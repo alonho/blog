@@ -62,7 +62,7 @@ github_user: alonho
 github_repo_count: 0
 github_show_profile_link: true
 github_skip_forks: true
-github_blacklist: game_of_life_vhdl, emacs_config, course, game_of_life_haskell, stuff, asserter, gold_and_hail, zilber, event_manager, python-memory-inspection
+github_blacklist: game_of_life_vhdl, emacs_config, course, game_of_life_haskell, stuff, asserter, gold_and_hail, zilber, event_manager, python-memory-inspection, blog
 
 # Twitter
 twitter_user: alonhorev
