@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hardware | Alon Horev]]></title>
   <link href="http://alon.horev.net/blog/categories/hardware/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-17T23:41:21+02:00</updated>
+  <updated>2012-12-17T23:57:54+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -417,6 +417,7 @@ each component has it's own hardware resources and works in parallel to others.<
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p><strong>3</strong>: <em>Generics</em> are variables that can be set upon entity instantiation. Somewhat similar to constructor arguments in object oriented languages.<br/>
+<strong>4-11</strong>: The alive bits are defined as integers of one bit. In contrast to <em>std_logic</em>, integers support arithmetic operations, even though both are implemented as a single wire.<br/>
 <strong>19</strong>: Notice the process gets an argument? A process can state a list of signals (also called a <em>sensitivity list</em>) that should trigger it's invocation. That way, the cell will calculate it's next state every time the clock changes.<br/>
 <strong>20</strong>: Variables are exactly what you think they. Notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors. VHDL will dedicate only 4 wires for that variable.</p>
 
@@ -474,7 +475,7 @@ each component has it's own hardware resources and works in parallel to others.<
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">...</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>The following wave form is directly generated from the test:</p>
+<p>The following wave form can be generated from the test:</p>
 
 <p><img src="/images/vhdl_post/cell_test.png" title="Cell test waveform" ></p>
 

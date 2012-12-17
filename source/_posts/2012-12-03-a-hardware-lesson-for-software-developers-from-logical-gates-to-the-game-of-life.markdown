@@ -175,6 +175,7 @@ Here's the cell's code:
 {% include_code Cell lang:vhdl cell.vhdl %}
 
 **3**: *Generics* are variables that can be set upon entity instantiation. Somewhat similar to constructor arguments in object oriented languages.  
+**4-11**: The alive bits are defined as integers of one bit. In contrast to *std_logic*, integers support arithmetic operations, even though both are implemented as a single wire.  
 **19**: Notice the process gets an argument? A process can state a list of signals (also called a *sensitivity list*) that should trigger it's invocation. That way, the cell will calculate it's next state every time the clock changes.  
 **20**: Variables are exactly what you think they. Notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors. VHDL will dedicate only 4 wires for that variable.
 
@@ -210,7 +211,7 @@ assert alive = 1
 ...
 {% endcodeblock %}
 
-The following wave form is directly generated from the test:
+The following wave form can be generated from the test:
 
 {% img /images/vhdl_post/cell_test.png Cell test waveform %}
 
