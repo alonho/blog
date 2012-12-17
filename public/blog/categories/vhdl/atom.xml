@@ -4,7 +4,7 @@
   <title><![CDATA[Category: VHDL | Alon Horev]]></title>
   <link href="http://alon.horev.net/blog/categories/vhdl/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-13T13:29:54+02:00</updated>
+  <updated>2012-12-14T00:44:51+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -31,7 +31,7 @@ Not every Python programmer knows C, and not every C programmer knows assembler.
 I'm going to assume you know nothing about hardware and a little about software.<br/>
 VHDL is based on Ada so you might even find it familiar.</p>
 
-<h2>Booleans all the way down</h2>
+<h2>Intro - booleans all the way down</h2>
 
 <p>Most hardware these days is based on boolean logic, here's why:</p>
 
@@ -421,9 +421,13 @@ each component has it's own hardware resources and works in parallel to others.<
 <strong>19</strong>: Notice the process gets an argument? A process can state a list of signals (also called a <em>sensitivity list</em>) that should trigger it's invocation. That way, the cell will calculate it's next state every time the clock changes.<br/>
 <strong>20</strong>: Variables are exactly what you think they. Notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors. VHDL will dedicate only 4 wires for that variable.</p>
 
+<h2>Testing a cell</h2>
+
+<p><img src="/images/vhdl_post/cell_test.png" title="Cell test waveform" ></p>
+
 <h2>Composing a board from cells</h2>
 
-<p>I'll spare you of the <a href="https://github.com/alonho/game_of_life_vhdl/blob/master/board.vhdl">board's code</a> as it contain some boilerplate. Instead, I'll show it's hardware specification:</p>
+<p>I'll spare you of the <a href="https://github.com/alonho/game_of_life_vhdl/blob/master/board.vhdl">board's code</a> as it contains some boilerplate. Instead, I'll show it's hardware specification:</p>
 
 <p><img src="/images/vhdl_post/board.png" title="Schematic of a two cell board" ></p>
 
@@ -471,12 +475,13 @@ Hardware - write concurrent code, write serial code where needed.</p></blockquot
 </ol>
 
 
-<h2>Tools</h2>
+<h2>References</h2>
 
 <ul>
-<li>ghdl (for mac!) is a VHDL compiler</li>
-<li>Xilinix on windows for schematic generation</li>
-<li>gtkwave for visualizing simulations</li>
+<li>The <a href="https://github.com/alonho/game_of_life_vhdl">github repo</a> contains all the sources.</li>
+<li><a href="http://ghdl.free.fr/">ghdl</a> is a VHDL compiler that works on mac.</li>
+<li><a href="http://gtkwave.sourceforge.net/">gtkwave</a> for visualizing simulations.</li>
+<li><a href="http://www.xilinx.com/products/design-tools/ise-design-suite/ise-webpack.htm">Xilinix</a> on windows for schematic generation.</li>
 </ul>
 
 ]]></content>

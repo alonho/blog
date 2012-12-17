@@ -19,8 +19,8 @@ Not every Python programmer knows C, and not every C programmer knows assembler.
 I'm going to assume you know nothing about hardware and a little about software.  
 VHDL is based on Ada so you might even find it familiar.
 
-Booleans all the way down
--------------------------
+Intro - booleans all the way down
+---------------------------------
 
 Most hardware these days is based on boolean logic, here's why:
 
@@ -173,10 +173,16 @@ Here's the cell's code:
 **19**: Notice the process gets an argument? A process can state a list of signals (also called a *sensitivity list*) that should trigger it's invocation. That way, the cell will calculate it's next state every time the clock changes.  
 **20**: Variables are exactly what you think they. Notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors. VHDL will dedicate only 4 wires for that variable.
 
+Testing a cell
+--------------
+
+
+{% img /images/vhdl_post/cell_test.png Cell test waveform %}
+
 Composing a board from cells
 ----------------------------
 
-I'll spare you of the [board's code](https://github.com/alonho/game_of_life_vhdl/blob/master/board.vhdl) as it contain some boilerplate. Instead, I'll show it's hardware specification:
+I'll spare you of the [board's code](https://github.com/alonho/game_of_life_vhdl/blob/master/board.vhdl) as it contains some boilerplate. Instead, I'll show it's hardware specification:
 
 {% img /images/vhdl_post/board.png Schematic of a two cell board %}
 
@@ -212,9 +218,10 @@ One of the most challenging concepts in software is concurrency, it's interestin
 2. *Performance* of ASICs (Application specific integrated circuits - chips created for a specific task) can work faster compared to CPUs (That's why GPUs became popular).
 3. *Price per unit* can drop drastically for large amounts of ASICs (compare a chip that does bluetooth to an Intel CPU).
 
-Tools
------
+References
+----------
 
-* ghdl (for mac!) is a VHDL compiler
-* Xilinix on windows for schematic generation
-* gtkwave for visualizing simulations
+* The [github repo](https://github.com/alonho/game_of_life_vhdl) contains all the sources. 
+* [ghdl](http://ghdl.free.fr/) is a VHDL compiler that works on mac.
+* [gtkwave](http://gtkwave.sourceforge.net/) for visualizing simulations.
+* [Xilinix](http://www.xilinx.com/products/design-tools/ise-design-suite/ise-webpack.htm) on windows for schematic generation.
