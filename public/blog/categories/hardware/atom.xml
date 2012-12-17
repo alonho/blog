@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hardware | Alon Horev]]></title>
   <link href="http://alon.horev.net/blog/categories/hardware/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-14T00:44:51+02:00</updated>
+  <updated>2012-12-17T23:41:21+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -20,6 +20,8 @@
     <id>http://alon.horev.net/blog/2012/12/03/a-hardware-lesson-for-software-developers-from-logical-gates-to-the-game-of-life</id>
     <content type="html"><![CDATA[<p>A week ago I've decided to learn VHDL and as an exercise, implement <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">The game of life</a>.<br/>
 VHDL is a hardware description language. Basically, it's a programming language used by chip designers.</p>
+
+<p>This post is an introduction to VHDL.</p>
 
 <p><strong>Why learn VHDL?</strong><br/>
 I thought it'd be interesting to see what it takes to program a chip. Coming from software, I was specifically curious about the programming model and mind set. Think about it, all software eventually translates to CPU instructions. What's underneath that?..</p>
@@ -249,9 +251,6 @@ Sequential statements can be used to implement state machines and other sequenti
 <span class='line-number'>47</span>
 <span class='line-number'>48</span>
 <span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
 </pre></td><td class='code'><pre><code class='vhdl'><span class='line'><span class="k">library</span> <span class="nn">ieee</span><span class="p">;</span>
 </span><span class='line'><span class="k">use</span> <span class="nn">ieee.std_logic_1164.all</span><span class="p">;</span>
 </span><span class='line'>
@@ -282,19 +281,16 @@ Sequential statements can be used to implement state machines and other sequenti
 </span><span class='line'>      <span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
 </span><span class='line'>      <span class="k">assert</span> <span class="n">sum_1</span> <span class="o">=</span> <span class="sc">&#39;1&#39;</span> <span class="k">and</span> <span class="n">sum_0</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span>
 </span><span class='line'>        <span class="n">report</span> <span class="s">&quot;result should be 2&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span>
-</span><span class='line'>
 </span><span class='line'>      <span class="n">x</span> <span class="o">&lt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="n">y</span> <span class="o">&lt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
 </span><span class='line'>      <span class="k">assert</span> <span class="n">sum_1</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span> <span class="k">and</span> <span class="n">sum_0</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span>
 </span><span class='line'>        <span class="n">report</span> <span class="s">&quot;result should be 0&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span>
-</span><span class='line'>
 </span><span class='line'>      <span class="n">x</span> <span class="o">&lt;=</span> <span class="sc">&#39;1&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="n">y</span> <span class="o">&lt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
 </span><span class='line'>      <span class="k">assert</span> <span class="n">sum_1</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span> <span class="k">and</span> <span class="n">sum_0</span> <span class="o">=</span> <span class="sc">&#39;1&#39;</span>
 </span><span class='line'>        <span class="n">report</span> <span class="s">&quot;result should be 1&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span>
-</span><span class='line'>
 </span><span class='line'>      <span class="n">x</span> <span class="o">&lt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="n">y</span> <span class="o">&lt;=</span> <span class="sc">&#39;1&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
@@ -313,10 +309,10 @@ Sequential statements can be used to implement state machines and other sequenti
 <strong>24</strong>: The process definition. A process contains a list of <strong>sequential</strong> statements. Multiple processes run concurrently.<br/>
 <strong>26-27</strong>: Signal assignments.<br/>
 <strong>28</strong>: Signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.<br/>
-<strong>29</strong>: Assert the sum changed.<br/>
+<strong>29</strong>: Assert the sum changed. In case an assertion fails, the program will stop with an error.<br/>
 <strong>30 Until the end</strong>: Test the remaining cases.</p>
 
-<p>Here's the simulation in wave form:</p>
+<p>We can instruct the VHDL compiler to generate a waveform of the simulation:</p>
 
 <p><img src="/images/vhdl_post/adder_test.png" width="800" height="300" title="Waveform of adder_test.vhdl" ></p>
 
@@ -324,13 +320,16 @@ Sequential statements can be used to implement state machines and other sequenti
 An example is the <em>wait</em> statement. A 1 nano second sleep cannot be expressed solely by logical gates.
 The solution for time-aware components is connecting to a high speed clock (Implemented using a <a href="http://en.wikipedia.org/wiki/Crystal_oscillator">Crystal oscillator</a>), we'll see an example ahead.</p>
 
+<p><strong>Another Note</strong>: Not every integer addition requires a custom adder implementation.<br/>
+VHDL supports integers and arithmetic operations natively.</p>
+
 <h2>The game of life</h2>
 
-<p>Let's start with a typical software-based solution:</p>
+<p>Let's start with a typical <strong>software-based</strong> solution:</p>
 
 <ol>
 <li>The board is a matrix of booleans representing cells.</li>
-<li>For each cycle: the next board is generated by iterating over the matrix, for each cell: count it's neighbors and determine if it should live or die.</li>
+<li>For each cycle: the next board is generated by iterating over the matrix. For each cell: count it's neighbors and determine if it should live or die.</li>
 </ol>
 
 
@@ -423,6 +422,60 @@ each component has it's own hardware resources and works in parallel to others.<
 
 <h2>Testing a cell</h2>
 
+<p>The cell's test is very similar to the adder's test so here's just a snippet:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Cell test </span><a href='https://github.com/alonho/game_of_life_vhdl/blob/master/cell_test.vhdl'>cell_test.vhdl </a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='vhdl'><span class='line'><span class="p">...</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">-- 0 ns</span>
+</span><span class='line'><span class="n">clock</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">clock</span><span class="p">;</span> <span class="c1">-- invert the clock!</span>
+</span><span class='line'><span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
+</span><span class='line'><span class="k">assert</span> <span class="n">alive</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="n">report</span> <span class="s">&quot;cell should start as dead&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">-- 1 ns</span>
+</span><span class='line'><span class="n">left</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="n">right</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="n">clock</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">clock</span><span class="p">;</span>
+</span><span class='line'><span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
+</span><span class='line'><span class="k">assert</span> <span class="n">alive</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="n">report</span> <span class="s">&quot;cell should stay dead with only two live neighbors&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">-- 2 ns</span>
+</span><span class='line'><span class="n">lower</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="n">clock</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">clock</span><span class="p">;</span>
+</span><span class='line'><span class="k">wait</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">ns</span><span class="p">;</span>
+</span><span class='line'><span class="k">assert</span> <span class="n">alive</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="n">report</span> <span class="s">&quot;cell should come to life&quot;</span> <span class="k">severity</span> <span class="n">error</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>The following wave form is directly generated from the test:</p>
+
 <p><img src="/images/vhdl_post/cell_test.png" title="Cell test waveform" ></p>
 
 <h2>Composing a board from cells</h2>
@@ -470,7 +523,7 @@ Hardware - write concurrent code, write serial code where needed.</p></blockquot
 
 <ol>
 <li><em>Power consumption</em> of CPUs can render them unusable for many applications (Battery size/life).</li>
-<li><em>Performance</em> of ASICs (Application specific integrated circuits - chips created for a specific task) can work faster compared to CPUs (That's why GPUs became popular).</li>
+<li><em>Performance</em> of ASICs (Application specific integrated circuits - chips created for a specific task) can be better than a CPU's (That's why GPUs became popular).</li>
 <li><em>Price per unit</em> can drop drastically for large amounts of ASICs (compare a chip that does bluetooth to an Intel CPU).</li>
 </ol>
 

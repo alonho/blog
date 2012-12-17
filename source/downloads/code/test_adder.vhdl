@@ -28,19 +28,16 @@ architecture arch of adder_test is
       wait for 1 ns;
       assert sum_1 = '1' and sum_0 = '0'
         report "result should be 2" severity error;
-
       x <= '0';
       y <= '0';
       wait for 1 ns;
       assert sum_1 = '0' and sum_0 = '0'
         report "result should be 0" severity error;
-
       x <= '1';
       y <= '0';
       wait for 1 ns;
       assert sum_1 = '0' and sum_0 = '1'
         report "result should be 1" severity error;
-
       x <= '0';
       y <= '1';
       wait for 1 ns;
