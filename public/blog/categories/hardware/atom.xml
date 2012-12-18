@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hardware | Alon Horev]]></title>
   <link href="http://alon.horev.net/blog/categories/hardware/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-18T00:14:25+02:00</updated>
+  <updated>2012-12-18T23:57:06+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -514,8 +514,9 @@ each component has it's own hardware resources and works in parallel to others.<
 </ul>
 
 
-<p><strong>How different is the mind-set?</strong><br/>
-One of the most challenging concepts in software is concurrency, it's interesting how fundamental this topic is to hardware. Here's how I see it:</p>
+<p><strong>How different is the mind-set?</strong></p>
+
+<p>One of the most challenging concepts in software is concurrency, it's interesting how fundamental this topic is to hardware. Here's how I see it:</p>
 
 <blockquote><p>Software - write serial code, parallelize when need to scale.<br/>
 Hardware - write concurrent code, write serial code where needed.</p></blockquote>
@@ -523,19 +524,19 @@ Hardware - write concurrent code, write serial code where needed.</p></blockquot
 <p><strong>Why bother manufacturing new chips and not re-use CPUs?</strong></p>
 
 <ol>
-<li><em>Power consumption</em> of CPUs can render them unusable for many applications (Battery size/life).</li>
 <li><em>Performance</em> of ASICs (Application specific integrated circuits - chips created for a specific task) can be better than a CPU's (That's why GPUs became popular).</li>
-<li><em>Price per unit</em> can drop drastically for large amounts of ASICs (compare a chip that does bluetooth to an Intel CPU).</li>
+<li><em>Power consumption</em> of CPUs can render them unusable for many applications.</li>
+<li><em>Price per unit</em> can drop drastically for large amounts of ASICs (compare a GPS chip to an Intel CPU).</li>
 </ol>
 
 
 <h2>References</h2>
 
 <ul>
-<li>The <a href="https://github.com/alonho/game_of_life_vhdl">github repo</a> contains all the sources.</li>
-<li><a href="http://ghdl.free.fr/">ghdl</a> is a VHDL compiler that works on mac.</li>
-<li><a href="http://gtkwave.sourceforge.net/">gtkwave</a> for visualizing simulations.</li>
-<li><a href="http://www.xilinx.com/products/design-tools/ise-design-suite/ise-webpack.htm">Xilinix</a> on windows for schematic generation.</li>
+<li>The <a href="https://github.com/alonho/game_of_life_vhdl">github repo</a> contains the source and a makefile for compiling, running tests and generating waveforms.</li>
+<li><a href="http://ghdl.free.fr/">ghdl</a> is a VHDL compiler (that even works on mac).</li>
+<li><a href="http://gtkwave.sourceforge.net/">gtkwave</a> is used for visualizing simulations.</li>
+<li><a href="http://www.xilinx.com/products/design-tools/ise-design-suite/ise-webpack.htm">Xilinix</a> is used for schematic generation.</li>
 </ul>
 
 ]]></content>

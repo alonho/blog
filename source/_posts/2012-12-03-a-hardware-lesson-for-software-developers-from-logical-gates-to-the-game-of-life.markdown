@@ -231,7 +231,7 @@ What are you seeing:
 Conclusions
 -----------
 
-**Scalability - How the design scales for a large amount of cells?**
+**Scalability - How the design scales for a large amount of cells?**  
 
 The software-based solution has several limits:
 
@@ -244,20 +244,21 @@ The hardware-based solution is said to be scalable:
 * There is no performance overhead and no arbitrary limit on the number of cells in the matrix.
 
 **How different is the mind-set?**  
+
 One of the most challenging concepts in software is concurrency, it's interesting how fundamental this topic is to hardware. Here's how I see it:
 > Software - write serial code, parallelize when need to scale.  
 > Hardware - write concurrent code, write serial code where needed.
 
 **Why bother manufacturing new chips and not re-use CPUs?**  
 
-1. *Power consumption* of CPUs can render them unusable for many applications (Battery size/life).  
-2. *Performance* of ASICs (Application specific integrated circuits - chips created for a specific task) can be better than a CPU's (That's why GPUs became popular).
-3. *Price per unit* can drop drastically for large amounts of ASICs (compare a chip that does bluetooth to an Intel CPU).
+1. *Performance* of ASICs (Application specific integrated circuits - chips created for a specific task) can be better than a CPU's (That's why GPUs became popular).
+2. *Power consumption* of CPUs can render them unusable for many applications.  
+3. *Price per unit* can drop drastically for large amounts of ASICs (compare a GPS chip to an Intel CPU).
 
 References
 ----------
 
-* The [github repo](https://github.com/alonho/game_of_life_vhdl) contains all the sources. 
-* [ghdl](http://ghdl.free.fr/) is a VHDL compiler that works on mac.
-* [gtkwave](http://gtkwave.sourceforge.net/) for visualizing simulations.
-* [Xilinix](http://www.xilinx.com/products/design-tools/ise-design-suite/ise-webpack.htm) on windows for schematic generation.
+* The [github repo](https://github.com/alonho/game_of_life_vhdl) contains the source and a makefile for compiling, running tests and generating waveforms. 
+* [ghdl](http://ghdl.free.fr/) is a VHDL compiler (that even works on mac).
+* [gtkwave](http://gtkwave.sourceforge.net/) is used for visualizing simulations.
+* [Xilinix](http://www.xilinx.com/products/design-tools/ise-design-suite/ise-webpack.htm) is used for schematic generation.
