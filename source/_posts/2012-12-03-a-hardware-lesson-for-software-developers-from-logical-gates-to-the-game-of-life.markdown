@@ -11,22 +11,24 @@ VHDL is a hardware description language. Basically, it's a programming language 
 
 This post is an introduction to VHDL.
 
+<!-- more -->
+
 **Why learn VHDL?**  
 I thought it'd be interesting to see what it takes to program a chip. Coming from software, I was specifically curious about the programming model and mind set. Think about it, all software eventually translates to CPU instructions. What's underneath that?..  
 
-It's my belief that every programmer should be familiar with the layers he relies on.  
+It's my belief that every programmer should be familiar with the layers he relies upon.  
 Not every Python programmer knows C, and not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.
 
-**Required knowledge**  
+**Prerequisites**  
 I'm going to assume you know nothing about hardware and a little about software.  
 VHDL is based on Ada so you might even find it familiar.
 
-Intro - booleans all the way down
+Intro - Booleans All The Way Down
 ---------------------------------
 
 Most hardware these days is based on boolean logic, here's why:
 
-* Boolean algebra has been around for ages - simple boolean operations like 'and', 'or' and 'not' can compose incredibly sophisticated algorithms (calculators, modems, CPUs!).
+* Boolean algebra has been around for ages - simple boolean operations like 'and', 'or' and 'not' can be composed into basic building blocks used to construct more sophisticated logic (calculators, modems, CPUs!).
 * Passing boolean data is easy in hardware, you pass electricity through a wire to indicate a **true** state and stop passing electricity to indicate a **false** state.
 
 **Light bulb moment: ever wondered why integers in software are powers of two?**  
@@ -34,7 +36,7 @@ A CPU has a fixed amount of wires (32/64) dedicated to represent data (a.k.a wor
 Each wire represents a bit that can be true or false (1 or 0).  
 The binary numeral system is used to represent a number in a bunch of 1s and 0s.
 
-Dive into VHDL - the life of a gate
+Dive Into VHDL - The Life Of A Gate
 -----------------------------------
 
 Let's start off with an implementation of an 'and' gate:
@@ -55,10 +57,10 @@ By using a synthesis tool we can convert this code to a hardware schematic:
 
 {% img /images/vhdl_post/and.png Schematic of the 'and' component %}
 
-Think parallel - a simple adder
+Think Parallel - A Simple Adder
 -------------------------------
 
-We'll implement an adder that takes two bit-sized inputs (x and y) and adds them to a two-bit output (sum_0 and sum_1. sum_1 is the carry).
+We'll implement an adder that takes two 1-bit sized inputs (x and y) and adds them to a 2-bit sized output (sum_0 and sum_1. sum_1 is the carry).
 The following table demonstrates the adder's functionality:
 
 <table>
@@ -117,9 +119,9 @@ The answer is: these lines execute all the time, **in parallel!**
 > **VHDL is concurrent by default**.
 
 VHDL has the notion of *concurrent* statements vs. *sequential* statements.  
-Sequential statements can be used to implement state machines and other sequential procedures. 
+Sequential statements can be used to implement state machines and other sequential logic. 
 
-Testing using sequential code
+Testing Using Sequential Code
 -----------------------------
 
 The hardware manufacturing phase of a chip is long and expensive, therefore, VHDL programmers (often called designers) write tests (often called 'test-benches' or 'simulations').  
@@ -131,7 +133,7 @@ The following test code will verify the adder's functionality by driving differe
 **4**: Define an entity for the test. This entity has no inputs and outputs.  
 **9-14**: Repetition of the adder's interface (VHDL isn't very DRY)  
 **16**: Signals are wires that the test can manipulate. their type is std_logic (a bit)  
-**19-22**: A port map connects the signals to the adder's ports. I named the signals exactly as the adder's ports.  
+**19-22**: A port map connects the signals to the adder's ports. I've named the signals exactly as the adder's ports.  
 **24**: The process definition. A process contains a list of **sequential** statements. Multiple processes run concurrently.  
 **26-27**: Signal assignments.  
 **28**: Signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.  
@@ -149,7 +151,7 @@ The solution for time-aware components is connecting to a high speed clock (Impl
 **Another Note**: Not every integer addition requires a custom adder implementation.  
 VHDL supports integers and arithmetic operations natively.
 
-The game of life
+The Game Of Life
 ----------------
 
 Let's start with a typical **software-based** solution:
@@ -179,7 +181,7 @@ Here's the cell's code:
 **19**: Notice the process gets an argument? A process can state a list of signals (also called a *sensitivity list*) that should trigger it's invocation. That way, the cell will calculate it's next state every time the clock changes.  
 **20**: Variables are exactly what you think they. Notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors. VHDL will dedicate only 4 wires for that variable.
 
-Testing a cell
+Testing A Cell
 --------------
 
 The cell's test is very similar to the adder's test so here's just a snippet:
@@ -215,7 +217,7 @@ The following wave form can be generated from the test:
 
 {% img /images/vhdl_post/cell_test.png Cell test waveform %}
 
-Composing a board from cells
+Composing A Board From Cells
 ----------------------------
 
 I'll spare you of the [board's code](https://github.com/alonho/game_of_life_vhdl/blob/master/board.vhdl) as it contains some boilerplate. Instead, I'll show it's hardware specification:
@@ -231,7 +233,7 @@ What are you seeing:
 Conclusions
 -----------
 
-**Scalability - How the design scales for a large amount of cells?**  
+**Scalability - How does the design scale for a large amount of cells?**  
 
 The software-based solution has several limits:
 

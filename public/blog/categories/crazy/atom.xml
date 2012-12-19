@@ -4,7 +4,7 @@
   <title><![CDATA[Category: crazy | Alon Horev]]></title>
   <link href="http://alon.horev.net/blog/categories/crazy/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-18T23:57:06+02:00</updated>
+  <updated>2012-12-20T01:43:08+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -23,22 +23,25 @@ VHDL is a hardware description language. Basically, it's a programming language 
 
 <p>This post is an introduction to VHDL.</p>
 
+<!-- more -->
+
+
 <p><strong>Why learn VHDL?</strong><br/>
 I thought it'd be interesting to see what it takes to program a chip. Coming from software, I was specifically curious about the programming model and mind set. Think about it, all software eventually translates to CPU instructions. What's underneath that?..</p>
 
-<p>It's my belief that every programmer should be familiar with the layers he relies on.<br/>
+<p>It's my belief that every programmer should be familiar with the layers he relies upon.<br/>
 Not every Python programmer knows C, and not every C programmer knows assembler. But when the shit hits the fan, this knowledge comes in handy.</p>
 
-<p><strong>Required knowledge</strong><br/>
+<p><strong>Prerequisites</strong><br/>
 I'm going to assume you know nothing about hardware and a little about software.<br/>
 VHDL is based on Ada so you might even find it familiar.</p>
 
-<h2>Intro - booleans all the way down</h2>
+<h2>Intro - Booleans All The Way Down</h2>
 
 <p>Most hardware these days is based on boolean logic, here's why:</p>
 
 <ul>
-<li>Boolean algebra has been around for ages - simple boolean operations like 'and', 'or' and 'not' can compose incredibly sophisticated algorithms (calculators, modems, CPUs!).</li>
+<li>Boolean algebra has been around for ages - simple boolean operations like 'and', 'or' and 'not' can be composed into basic building blocks used to construct more sophisticated logic (calculators, modems, CPUs!).</li>
 <li>Passing boolean data is easy in hardware, you pass electricity through a wire to indicate a <strong>true</strong> state and stop passing electricity to indicate a <strong>false</strong> state.</li>
 </ul>
 
@@ -48,7 +51,7 @@ A CPU has a fixed amount of wires (32/64) dedicated to represent data (a.k.a wor
 Each wire represents a bit that can be true or false (1 or 0).<br/>
 The binary numeral system is used to represent a number in a bunch of 1s and 0s.</p>
 
-<h2>Dive into VHDL - the life of a gate</h2>
+<h2>Dive Into VHDL - The Life Of A Gate</h2>
 
 <p>Let's start off with an implementation of an 'and' gate:</p>
 
@@ -97,9 +100,9 @@ The binary numeral system is used to represent a number in a bunch of 1s and 0s.
 
 <p><img src="/images/vhdl_post/and.png" title="Schematic of the 'and' component" ></p>
 
-<h2>Think parallel - a simple adder</h2>
+<h2>Think Parallel - A Simple Adder</h2>
 
-<p>We'll implement an adder that takes two bit-sized inputs (x and y) and adds them to a two-bit output (sum_0 and sum_1. sum_1 is the carry).
+<p>We'll implement an adder that takes two 1-bit sized inputs (x and y) and adds them to a 2-bit sized output (sum_0 and sum_1. sum_1 is the carry).
 The following table demonstrates the adder's functionality:</p>
 
 <table>
@@ -193,9 +196,9 @@ The answer is: these lines execute all the time, <strong>in parallel!</strong></
 <strong>VHDL is concurrent by default</strong>.</p></blockquote>
 
 <p>VHDL has the notion of <em>concurrent</em> statements vs. <em>sequential</em> statements.<br/>
-Sequential statements can be used to implement state machines and other sequential procedures.</p>
+Sequential statements can be used to implement state machines and other sequential logic.</p>
 
-<h2>Testing using sequential code</h2>
+<h2>Testing Using Sequential Code</h2>
 
 <p>The hardware manufacturing phase of a chip is long and expensive, therefore, VHDL programmers (often called designers) write tests (often called 'test-benches' or 'simulations').</p>
 
@@ -305,7 +308,7 @@ Sequential statements can be used to implement state machines and other sequenti
 <p><strong>4</strong>: Define an entity for the test. This entity has no inputs and outputs.<br/>
 <strong>9-14</strong>: Repetition of the adder's interface (VHDL isn't very DRY)<br/>
 <strong>16</strong>: Signals are wires that the test can manipulate. their type is std_logic (a bit)<br/>
-<strong>19-22</strong>: A port map connects the signals to the adder's ports. I named the signals exactly as the adder's ports.<br/>
+<strong>19-22</strong>: A port map connects the signals to the adder's ports. I've named the signals exactly as the adder's ports.<br/>
 <strong>24</strong>: The process definition. A process contains a list of <strong>sequential</strong> statements. Multiple processes run concurrently.<br/>
 <strong>26-27</strong>: Signal assignments.<br/>
 <strong>28</strong>: Signals have an interesting behavior where the assignment takes effect only when calling 'wait'. This is a feature and not a bug as it allows doing atomic changes over multiple signals.<br/>
@@ -323,7 +326,7 @@ The solution for time-aware components is connecting to a high speed clock (Impl
 <p><strong>Another Note</strong>: Not every integer addition requires a custom adder implementation.<br/>
 VHDL supports integers and arithmetic operations natively.</p>
 
-<h2>The game of life</h2>
+<h2>The Game Of Life</h2>
 
 <p>Let's start with a typical <strong>software-based</strong> solution:</p>
 
@@ -421,7 +424,7 @@ each component has it's own hardware resources and works in parallel to others.<
 <strong>19</strong>: Notice the process gets an argument? A process can state a list of signals (also called a <em>sensitivity list</em>) that should trigger it's invocation. That way, the cell will calculate it's next state every time the clock changes.<br/>
 <strong>20</strong>: Variables are exactly what you think they. Notice we limit the integer's range to 8? that's because we'll have a maximum of 8 neighbors. VHDL will dedicate only 4 wires for that variable.</p>
 
-<h2>Testing a cell</h2>
+<h2>Testing A Cell</h2>
 
 <p>The cell's test is very similar to the adder's test so here's just a snippet:</p>
 
@@ -479,7 +482,7 @@ each component has it's own hardware resources and works in parallel to others.<
 
 <p><img src="/images/vhdl_post/cell_test.png" title="Cell test waveform" ></p>
 
-<h2>Composing a board from cells</h2>
+<h2>Composing A Board From Cells</h2>
 
 <p>I'll spare you of the <a href="https://github.com/alonho/game_of_life_vhdl/blob/master/board.vhdl">board's code</a> as it contains some boilerplate. Instead, I'll show it's hardware specification:</p>
 
@@ -496,7 +499,7 @@ each component has it's own hardware resources and works in parallel to others.<
 
 <h2>Conclusions</h2>
 
-<p><strong>Scalability - How the design scales for a large amount of cells?</strong></p>
+<p><strong>Scalability - How does the design scale for a large amount of cells?</strong></p>
 
 <p>The software-based solution has several limits:</p>
 
