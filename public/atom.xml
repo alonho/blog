@@ -4,7 +4,7 @@
   <title><![CDATA[Alon Horev]]></title>
   <link href="http://alon.horev.net/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2012-12-20T01:46:23+02:00</updated>
+  <updated>2013-10-21T23:07:49+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -12,6 +12,284 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A Rant About Partial And Lambda]]></title>
+    <link href="http://alon.horev.net/blog/2013/10/20/a-rant-about-partial-and-lambda/"/>
+    <updated>2013-10-20T19:39:00+02:00</updated>
+    <id>http://alon.horev.net/blog/2013/10/20/a-rant-about-partial-and-lambda</id>
+    <content type="html"><![CDATA[<h2>My beef with partial</h2>
+
+<p><em>partial</em> is not a function and misbehaves where functions are expected. <em>partial</em> can be easily implemented in pure python but I can only guess it was implemented in C for performance considerations. Lets review some examples:</p>
+
+<p>1. Partial doesn&#8217;t work on methods:</p>
+
+<figure class='code'><figcaption><span>partial on methods  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Cell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span>
+</span><span class='line'>    <span class="n">set_alive</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">set_state</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">set_dead</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">set_state</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Cell</span><span class="p">()</span><span class="o">.</span><span class="n">set_alive</span><span class="p">()</span>
+</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="n">set_state</span><span class="p">()</span> <span class="n">missing</span> <span class="mi">1</span> <span class="n">required</span> <span class="n">positional</span> <span class="n">argument</span><span class="p">:</span> <span class="o">*</span><span class="bp">self</span><span class="o">*</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Why is that?</strong></p>
+
+<p>You know how <em>self</em> always gets assigned the instance when calling an instance method?
+Well, it&#8217;s implemented using a mechanism called descriptors. In order to support that functionality the function type implements a <em>__get__</em> method.</p>
+
+<p>Here&#8217;s how a method call works:</p>
+
+<figure class='code'><figcaption><span>methods explained  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">speak</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;My name is&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Person</span><span class="p">(</span><span class="s">&#39;Neo&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">speak</span><span class="p">()</span>
+</span><span class='line'><span class="n">My</span> <span class="n">name</span> <span class="ow">is</span> <span class="n">Neo</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Person</span><span class="o">.</span><span class="n">speak</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">Person</span><span class="p">(</span><span class="s">&#39;Neo&#39;</span><span class="p">))()</span> <span class="c"># the previous line translates to this</span>
+</span><span class='line'><span class="n">My</span> <span class="n">name</span> <span class="ow">is</span> <span class="n">Neo</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">method</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">speak</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">Person</span><span class="p">(</span><span class="s">&#39;Neo&#39;</span><span class="p">))</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">method</span><span class="o">.</span><span class="n">im_self</span> <span class="c"># that&#39;s where self is hiding!</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="n">at</span> <span class="mh">0x101bebb50</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">method</span><span class="o">.</span><span class="n">im_func</span> <span class="c"># that&#39;s where the function is hiding!</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">function</span> <span class="n">__main__</span><span class="o">.</span><span class="n">speak</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">method</span><span class="p">()</span> <span class="c"># same as: method.im_func(method.im_self)</span>
+</span><span class='line'><span class="n">My</span> <span class="n">name</span> <span class="ow">is</span> <span class="n">Neo</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>How do we fix it?</strong></p>
+
+<p>You could implement your own partial, that actually returns a function:</p>
+
+<figure class='code'><figcaption><span>an alternative partial  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">new_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">args</span><span class="p">),</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">new_func</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Note:</strong> don&#8217;t use this code, it doesn&#8217;t enforce unique keyword arguments.</p>
+
+<p>You could also simply use a lambda function:</p>
+
+<figure class='code'><figcaption><span>lambda as partial method  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Cell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>     <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+</span><span class='line'>         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span>
+</span><span class='line'>     <span class="n">set_alive</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>     <span class="n">set_dead</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2. <em>inspect.getargspec</em> doesn&#8217;t like <em>partial</em>:</p>
+
+<figure class='code'><figcaption><span>inspect and partial  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">functools</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;/usr/lib/python3.3/inspect.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">823</span><span class="p">,</span> <span class="ow">in</span> <span class="n">getargspec</span>
+</span><span class='line'>    <span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;/usr/lib/python3.3/inspect.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">850</span><span class="p">,</span> <span class="ow">in</span> <span class="n">getfullargspec</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;{!r} is not a Python function&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="p">))</span>
+</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="o">&lt;</span><span class="n">function</span> <span class="o">&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x1073065f0</span><span class="o">&gt;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">a</span> <span class="n">Python</span> <span class="n">function</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>3. <em>partial</em> could be safer, validating argument counts and names:</p>
+
+<figure class='code'><figcaption><span>argument validation  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="c"># why not verify signature here?!</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">f</span><span class="p">()</span>
+</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="o">&lt;</span><span class="k">lambda</span><span class="o">&gt;</span><span class="p">()</span> <span class="n">takes</span> <span class="n">no</span> <span class="n">arguments</span> <span class="p">(</span><span class="mi">3</span> <span class="n">given</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Can we do better?</strong></p>
+
+<p>I&#8217;d like to propose a mechanism similar to Javascript&#8217;s <em>Function.bind</em> functionality.</p>
+
+<p>Here&#8217;s how I&#8217;d like it to behave (this is a proposal, the code doesn&#8217;t actually work):</p>
+
+<figure class='code'><figcaption><span>bind examples  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+</span><span class='line'><span class="n">add5_partial</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="c"># requires an import</span>
+</span><span class='line'><span class="n">add5_lambda</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="c"># pretty long</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">add5_bind</span> <span class="o">=</span> <span class="n">add</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c"># shortest</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">inspect</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">add</span><span class="p">)</span>
+</span><span class='line'><span class="n">ArgSpec</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">],</span> <span class="n">varargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">add5_bind</span><span class="p">)</span> <span class="c"># works with inspect</span>
+</span><span class='line'><span class="n">ArgSpec</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">],</span> <span class="n">varargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you dig <em>bind</em>, please comment/vote. Given enough feedback I&#8217;ll be motivated to write a PEP.</p>
+
+<h2>My problem with lambdas</h2>
+
+<p>As my friend @EyalIL wrote:</p>
+
+<blockquote><p>Lambdas capture the variable, partial captures the value.</p>
+
+<p>The latter is much more often useful.</p></blockquote>
+
+<p>Here&#8217;s an example to make that sentence clearer:</p>
+
+<figure class='code'><figcaption><span>lambda bug  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">callbacks</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">i</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="p">[</span><span class="n">callback</span><span class="p">()</span> <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">]</span>
+</span><span class='line'><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Why does it happen?</p>
+
+<p>Because python supports closures (which are usually a good thing):</p>
+
+<figure class='code'><figcaption><span>closures explained  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">var</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'><span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">var</span>
+</span><span class='line'><span class="k">print</span> <span class="n">f</span><span class="p">()</span> <span class="c"># 1</span>
+</span><span class='line'><span class="n">var</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span class='line'><span class="k">print</span> <span class="n">f</span><span class="p">()</span> <span class="c"># 2</span>
+</span><span class='line'><span class="c"># but, but, how does python know?! well, a function can hold references to variables in outer scopes</span>
+</span><span class='line'><span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">func_closure</span><span class="p">()</span> <span class="c"># (&lt;cell at 0x101bdfb40: int object at 0x7fd3e9c106d8&gt;,)</span>
+</span><span class='line'><span class="c"># what are these cells? the cell is basically a pointer to some name in some scope. holding a reference promises changes to be reflected even when changing immutable datatypes.</span>
+</span><span class='line'><span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">func_closure</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cell_contents</span> <span class="c"># 2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A solution would be to define variables who aren&#8217;t function arguments as function arguments:</p>
+
+<figure class='code'><figcaption><span>lambdas with default args  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">callbacks</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="o">=</span><span class="n">i</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="p">[</span><span class="n">callback</span><span class="p">()</span> <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">]</span>
+</span><span class='line'><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A hardware lesson for software developers: from logical gates to the game of life]]></title>
