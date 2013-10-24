@@ -14,7 +14,7 @@ def add(x, y):
     return x + y
 
 from functools import partial
-add5_partial = partial(5)
+add5_partial = partial(add, 5)
 add5_partial(10) # 15
 
 add5_lambda = lambda x: add(x, 5)

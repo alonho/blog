@@ -4,7 +4,7 @@
   <title><![CDATA[Alon Horev]]></title>
   <link href="http://alon.horev.net/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2013-10-24T08:49:40+02:00</updated>
+  <updated>2013-10-24T12:06:13+03:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Argument binding in python]]></title>
     <link href="http://alon.horev.net/blog/2013/10/20/argument-binding-in-python/"/>
-    <updated>2013-10-20T19:39:00+02:00</updated>
+    <updated>2013-10-20T19:39:00+03:00</updated>
     <id>http://alon.horev.net/blog/2013/10/20/argument-binding-in-python</id>
     <content type="html"><![CDATA[<p>After a recent debate about argument binding I decided to list some pros and cons of the different methods to bind arguments in python. Let&#8217;s start with a review of available methods:</p>
 
@@ -34,7 +34,7 @@
 </span><span class='line'>    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 </span><span class='line'>
 </span><span class='line'><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-</span><span class='line'><span class="n">add5_partial</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span><span class='line'><span class="n">add5_partial</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 </span><span class='line'><span class="n">add5_partial</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c"># 15</span>
 </span><span class='line'>
 </span><span class='line'><span class="n">add5_lambda</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
