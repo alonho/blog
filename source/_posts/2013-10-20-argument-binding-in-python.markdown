@@ -84,6 +84,7 @@ My name is Neo
 >>> # if it doesn't implement __get__, return the value
 >>> # if it does, return whatever __get__ returns
 >>> method = Person.speak.__get__(Person('Neo'))
+>>> method
 <bound method Person.speak of <__main__.Person object at 0x109d7bb90>>
 
 {% endcodeblock %}
