@@ -4,7 +4,7 @@
   <title><![CDATA[Alon Horev]]></title>
   <link href="http://alon.horev.net/atom.xml" rel="self"/>
   <link href="http://alon.horev.net/"/>
-  <updated>2013-10-24T12:06:13+03:00</updated>
+  <updated>2015-11-08T03:48:04+02:00</updated>
   <id>http://alon.horev.net/</id>
   <author>
     <name><![CDATA[Alon Horev]]></name>
@@ -114,6 +114,7 @@ Well, it&#8217;s implemented using a mechanism called descriptors. In order to s
 <span class='line-number'>28</span>
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
+<span class='line-number'>31</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 </span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 </span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
@@ -143,6 +144,7 @@ Well, it&#8217;s implemented using a mechanism called descriptors. In order to s
 </span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="c"># if it doesn&#39;t implement __get__, return the value</span>
 </span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="c"># if it does, return whatever __get__ returns</span>
 </span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">method</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">speak</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">Person</span><span class="p">(</span><span class="s">&#39;Neo&#39;</span><span class="p">))</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">method</span>
 </span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Person</span><span class="o">.</span><span class="n">speak</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x109d7bb90</span><span class="o">&gt;&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 

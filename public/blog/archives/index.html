@@ -33,18 +33,22 @@ Dec &hellip;">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-66613820-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
 
 </head>
 
 <body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Alon Horev</a></h1>
-  
-    <h2>My stderr about Python, databases and the web.</h2>
-  
-</hgroup>
-
-</header>
   <nav role="navigation"><ul class="subscription" data-subscription="rss">
   <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
   
@@ -58,6 +62,16 @@ Dec &hellip;">
 </form>
   
 <ul class="main-navigation">
+    <li><a href="/">
+        <span class="blue_light">
+            Alon Horev
+        </span>
+       
+           <span class="blue_dark">
+             software development musings.
+           </span>
+       
+    </a></li>
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
 </ul>
@@ -115,8 +129,8 @@ Dec &hellip;">
 <aside class="sidebar">
   
     <section>
-  <h1>Contact</h1>
-  <p>alon at horev dot net</p>
+  <h1>About Me</h1>
+  <p>I'm a software a developer and founder of <a href="http://digdata.io">DigData.io</a>.</p>
 </section>
 <section>
   <h1>Recent Posts</h1>
@@ -191,7 +205,7 @@ Dec &hellip;">
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Alon Horev -
+  Copyright &copy; 2015 - Alon Horev -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
@@ -223,7 +237,59 @@ Dec &hellip;">
 }(document, 'script', 'facebook-jssdk'));</script>
 
 
-Liquid error: invalid byte sequence in US-ASCII
+
+<!--
+hn like button plugin for jekyll/octopress
+Author: dryman (Felix Ren-Chyan Chern)
+
+Inpired from http://hnlike.com/ written by sbashyal
+
+(The MIT License)
+
+Copyright © 2012-2013 Felix Ren-Chyan Chern
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the ‘Software’), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+  <script type="text/javascript">
+    (function(){
+      var hn_like = document.createElement('iframe');
+      hn_like.frameborder="no";
+      hn_like.scrolling="no";
+      hn_like.height="28px";
+      hn_like.width="115px";
+      hn_like.src = "http://hnlike.com/upvote.php?link="
+                    + encodeURIComponent(document.location)
+                    + "&title="
+                    + encodeURIComponent("Blog Archive");
+      hn_like.innerHTML="iframes not supported by your browser";
+      var twitter = document.getElementsByClassName("twitter-share-button")[0];
+
+      twitter.parentNode.insertBefore(
+        hn_like,
+        twitter
+      );
+    })();
+  </script>
+
+<!-- end of hn like button -->
+
+
 
 
 

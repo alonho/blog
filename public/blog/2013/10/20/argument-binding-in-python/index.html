@@ -31,18 +31,22 @@
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-66613820-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
 
 </head>
 
 <body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Alon Horev</a></h1>
-  
-    <h2>My stderr about Python, databases and the web.</h2>
-  
-</hgroup>
-
-</header>
   <nav role="navigation"><ul class="subscription" data-subscription="rss">
   <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
   
@@ -56,6 +60,16 @@
 </form>
   
 <ul class="main-navigation">
+    <li><a href="/">
+        <span class="blue_light">
+            Alon Horev
+        </span>
+       
+           <span class="blue_dark">
+             software development musings.
+           </span>
+       
+    </a></li>
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
 </ul>
@@ -189,6 +203,7 @@ Well, it&#8217;s implemented using a mechanism called descriptors. In order to s
 <span class='line-number'>28</span>
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
+<span class='line-number'>31</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 </span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 </span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
@@ -218,6 +233,7 @@ Well, it&#8217;s implemented using a mechanism called descriptors. In order to s
 </span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="c"># if it doesn&#39;t implement __get__, return the value</span>
 </span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="c"># if it does, return whatever __get__ returns</span>
 </span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">method</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">speak</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">Person</span><span class="p">(</span><span class="s">&#39;Neo&#39;</span><span class="p">))</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">method</span>
 </span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Person</span><span class="o">.</span><span class="n">speak</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x109d7bb90</span><span class="o">&gt;&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -476,8 +492,8 @@ Well, it&#8217;s implemented using a mechanism called descriptors. In order to s
 <aside class="sidebar">
   
     <section>
-  <h1>Contact</h1>
-  <p>alon at horev dot net</p>
+  <h1>About Me</h1>
+  <p>I'm a software a developer and founder of <a href="http://digdata.io">DigData.io</a>.</p>
 </section>
 <section>
   <h1>Recent Posts</h1>
@@ -552,7 +568,7 @@ Well, it&#8217;s implemented using a mechanism called descriptors. In order to s
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Alon Horev -
+  Copyright &copy; 2015 - Alon Horev -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
@@ -587,7 +603,59 @@ Well, it&#8217;s implemented using a mechanism called descriptors. In order to s
 }(document, 'script', 'facebook-jssdk'));</script>
 
 
-Liquid error: invalid byte sequence in US-ASCII
+
+<!--
+hn like button plugin for jekyll/octopress
+Author: dryman (Felix Ren-Chyan Chern)
+
+Inpired from http://hnlike.com/ written by sbashyal
+
+(The MIT License)
+
+Copyright © 2012-2013 Felix Ren-Chyan Chern
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the ‘Software’), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+  <script type="text/javascript">
+    (function(){
+      var hn_like = document.createElement('iframe');
+      hn_like.frameborder="no";
+      hn_like.scrolling="no";
+      hn_like.height="28px";
+      hn_like.width="115px";
+      hn_like.src = "http://hnlike.com/upvote.php?link="
+                    + encodeURIComponent(document.location)
+                    + "&title="
+                    + encodeURIComponent("Argument binding in python");
+      hn_like.innerHTML="iframes not supported by your browser";
+      var twitter = document.getElementsByClassName("twitter-share-button")[0];
+
+      twitter.parentNode.insertBefore(
+        hn_like,
+        twitter
+      );
+    })();
+  </script>
+
+<!-- end of hn like button -->
+
+
 
 
 
