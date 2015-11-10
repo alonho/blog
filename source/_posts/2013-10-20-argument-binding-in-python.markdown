@@ -3,7 +3,7 @@ layout: post
 title: "Argument binding in python"
 date: 2013-10-20 19:39
 comments: true
-categories: 
+categories: [Python]
 ---
 
 After a recent debate about argument binding I decided to list some pros and cons of the different methods to bind arguments in python. Let's start with a review of available methods:

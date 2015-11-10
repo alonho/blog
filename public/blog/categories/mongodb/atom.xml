@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: MongoDB | Alon Horev]]></title>
+  <link href="http://alon.horev.net/blog/categories/mongodb/atom.xml" rel="self"/>
+  <link href="http://alon.horev.net/"/>
+  <updated>2015-11-10T08:30:22+02:00</updated>
+  <id>http://alon.horev.net/</id>
+  <author>
+    <name><![CDATA[Alon Horev]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[MongoDB Querying Tips And Tricks]]></title>
+    <link href="http://alon.horev.net/blog/2015/11/09/mongodb-querying-tips-and-tricks/"/>
+    <updated>2015-11-09T10:35:00+02:00</updated>
+    <id>http://alon.horev.net/blog/2015/11/09/mongodb-querying-tips-and-tricks</id>
+    <content type="html"><![CDATA[<p>This post contains a bunch of tricks I picked up over the years working with MongoDB. They are also implemented in <a href="http://digdata.io">MQL</a> as helper functions.</p>
+
+<h2>Filter on creation time</h2>
+
+<p>Did you know you can filter on creation time without adding a timestamp field?</p>
+
+<p>By default, a document's _id field contains an ObjectId. This ObjectId is composed from several values: number of seconds from the epoch, machine identifier, process identifier and a counter.</p>
+
+<p>Since the ObjectId starts with a timestamp you can order by it or use it for filtering. The following function generates an ObjectId from a python datetime object:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kn">import</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">bson</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="nf">oid_from_date</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">seconds_from_epoch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()))</span>
+</span><span class='line'><span class="k">return</span> <span class="n">bson</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">seconds_from_epoch</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">+</span> <span class="s">&#39;0&#39;</span> <span class="o">*</span> <span class="mi">16</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">blockquote</span><span class="o">&gt;&lt;</span><span class="n">blockquote</span><span class="o">&gt;&lt;</span><span class="n">blockquote</span><span class="o">&gt;&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">oid_from_date</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span><span class='line'><span class="n">ObjectId</span><span class="p">(</span><span class="s">&#39;5597a0900000000000000000&#39;</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;&lt;/</span><span class="n">blockquote</span><span class="o">&gt;&lt;/</span><span class="n">blockquote</span><span class="o">&gt;&lt;/</span><span class="n">blockquote</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>We can now use this for querying documents in a specific range:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">blockquote</span><span class="o">&gt;&lt;</span><span class="n">blockquote</span><span class="o">&gt;&lt;</span><span class="n">blockquote</span><span class="o">&gt;&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">connection</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="n">_id</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;$gt&#39;</span><span class="p">:</span> <span class="n">oid_from_date</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="s">&#39;$lt&#39;</span><span class="p">:</span> <span class="n">oid_from_date</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))}})</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;&lt;/</span><span class="n">blockquote</span><span class="o">&gt;&lt;/</span><span class="n">blockquote</span><span class="o">&gt;&lt;/</span><span class="n">blockquote</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Here's how you would do it with <a href="http://digdata.io">MQL</a>:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">test</span><span class="p">.</span><span class="n">test</span> <span class="k">where</span> <span class="n">_id</span> <span class="k">between</span> <span class="n">oidFromDate</span><span class="p">(</span><span class="s1">&#39;2015-07-03&#39;</span><span class="p">)</span> <span class="k">and</span> <span class="n">oidFromDate</span><span class="p">(</span><span class="s1">&#39;2015-07-04&#39;</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>Convert datetime to date</h2>
+
+<p>It's often useful to aggregate data in different time resolutions: yearly, monthly, daily, etc'.</p>
+
+<p>MongoDB lets us group by several fields but having a seperate field for year, month and day isn't natural.</p>
+
+<p>As of MongoDB 3.0 there's a builtin function called <a href="https://docs.mongodb.org/v3.0/reference/operator/aggregation/dateToString/">dateToString</a> that does exactly that. The following solution is useful if you're still on 2.6.</p>
+
+<p>In order to generate a date from a datetime we can construct a number that contains the year, month and day. For example, the datetime <code>2015-07-04 12:00:00</code> can be represented as a date using a number: <code>20150704</code>. Here's how you would do it with <a href="http://digdata.io">MQL</a>:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">select</span> <span class="k">year</span><span class="p">(</span><span class="k">timestamp</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10000</span> <span class="o">+</span> <span class="k">month</span><span class="p">(</span><span class="k">timestamp</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="n">dayOfMonth</span><span class="p">(</span><span class="k">timestamp</span><span class="p">)</span> <span class="k">as</span> <span class="nb">date</span> <span class="k">from</span> <span class="n">test</span><span class="p">.</span><span class="n">test</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>There's a builtin helper function that generates the same expression:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">select</span> <span class="n">extractDate</span><span class="p">(</span><span class="k">timestamp</span><span class="p">)</span> <span class="k">as</span> <span class="nb">date</span> <span class="k">from</span> <span class="n">test</span><span class="p">.</span><span class="n">test</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Here's how you can do it with MongoDB's aggregation framework:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">connection</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([</span>
+</span><span class='line'>  <span class="p">{</span><span class="s">&#39;$project&#39;</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">{</span><span class="s">&#39;date&#39;</span><span class="p">:</span>
+</span><span class='line'>  <span class="p">{</span><span class="s">&#39;$add&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;$multiply&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;$year&#39;</span><span class="p">:</span> <span class="s">&#39;$timestamp&#39;</span><span class="p">},</span> <span class="mi">10000</span><span class="p">]},</span>
+</span><span class='line'>            <span class="p">{</span><span class="s">&#39;$multiply&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;$month&#39;</span><span class="p">:</span> <span class="s">&#39;$timestamp&#39;</span><span class="p">},</span> <span class="mi">100</span><span class="p">]},</span>
+</span><span class='line'>            <span class="p">{</span><span class="s">&#39;$dayOfMonth&#39;</span><span class="p">:</span> <span class="s">&#39;$timestamp&#39;</span><span class="p">]}}}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">])</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>You can use the same concept for aggregating on other resolutions using additional functions like <code>$hour</code> and <code>$minute</code>.</p>
+
+<h2>Floating point manipulation</h2>
+
+<p><code>floor</code> has been introduced in MongoDB 3.2 but since it's not out yet, you can do the following:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">connection</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([</span>
+</span><span class='line'>  <span class="p">{</span><span class="s">&#39;$project&#39;</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">{</span><span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;$subtract&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;$number&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;$mod&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;$number&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}]}}}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">])</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Here's how you would do it with <a href="http://digdata.io">MQL</a>:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">select</span> <span class="nb">number</span> <span class="o">-</span> <span class="nb">number</span> <span class="o">%</span> <span class="mi">1</span> <span class="k">from</span> <span class="n">test</span><span class="p">.</span><span class="n">test</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>There's a builtin helper function that generates the same expression:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">select</span> <span class="n">toInt</span><span class="p">(</span><span class="nb">number</span><span class="p">)</span> <span class="k">from</span> <span class="n">test</span><span class="p">.</span><span class="n">test</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>Compare fields</h2>
+
+<p>MongoDB's <code>find()</code> doesn't support comparing fields but the aggregation framework gives us the building blocks to implement it:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">connection</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([</span>
+</span><span class='line'>  <span class="p">{</span><span class="s">&#39;$project&#39;</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">{</span><span class="s">&#39;a = b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;$eq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;$a&#39;</span><span class="p">,</span> <span class="s">&#39;$b&#39;</span><span class="p">]}}},</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="p">{</span><span class="s">&#39;$match&#39;</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">{</span><span class="s">&#39;a = b&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">])</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Here's how you would do it with <a href="http://digdata.io">MQL</a>:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">select</span> <span class="n">a</span> <span class="k">from</span> <span class="n">test</span><span class="p">.</span><span class="n">test</span> <span class="k">where</span> <span class="n">a</span><span class="o">=</span><span class="n">b</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
+  
+</feed>
