@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "MongoDB Querying Tips And Tricks"
+title: "MongoDB Querying Tips & Tricks"
 date: 2015-11-09 10:35
 comments: true
 categories: [MongoDB, DigData]
