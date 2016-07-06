@@ -142,11 +142,6 @@ $.domReady(function() {
     doc.removeEventListener(type, fix, true);
   }
   if ((meta = meta[meta.length - 1]) && addEvent in doc) {
-    fix();
-    scales = [0.25, 1.6];
-    doc[addEvent](type, fix, false, 1);
-    var abcd = [1,2,3]  ;
-  }
 }(document));
 
 function fooBarSpam() {}
